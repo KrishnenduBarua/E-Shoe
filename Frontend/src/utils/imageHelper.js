@@ -4,51 +4,38 @@
  */
 export const getImageUrl = (imagePath) => {
   if (!imagePath) return "";
-  
-  // Trim any whitespace
-  imagePath = imagePath.trim();
 
-  // Fix malformed Cloudinary URLs (https// instead of https://)
-  if (imagePath.startsWith("https//")) {
-    return imagePath.replace("https//", "https://");
-  }
-
-  if (imagePath.startsWith("http//")) {
-    return imagePath.replace("http//", "http://");
-  }
+  // Convert to string and trim any whitespace
+  const path = String(imagePath).trim();
   
-  // Check if it contains cloudinary domain (even if malformed)
-  if (imagePath.includes("cloudinary.com")) {
-    // Ensure it has proper protocol
-    if (!imagePath.startsWith("http://") && !imagePath.startsWith("https://")) {
-      // Fix malformed URLs
-      if (imagePath.startsWith("https//")) {
-        return imagePath.replace("https//", "https://");
-      }
-      if (imagePath.startsWith("http//")) {
-        return imagePath.replace("http//", "http://");
-      }
-      if (imagePath.startsWith("//")) {
-        return `https:${imagePath}`;
-      }
-      // If no protocol at all, add https://
-      return `https://${imagePath}`;
+  // Check for cloudinary.com first (regardless of protocol)
+  if (path.includes("cloudinary.com") || path.includes("res.cloudinary")) {
+    // Fix malformed protocols
+    let fixedUrl = path
+      .replace(/^https\/\//, "https://")  // Fix https//
+      .replace(/^http\/\//, "http://")    // Fix http//
+      .replace(/^\/\//, "https://");     // Fix //
+    
+    // If still no protocol, add https://
+    if (!fixedUrl.match(/^https?:\/\//)) {
+      fixedUrl = `https://${fixedUrl}`;
     }
-    return imagePath;
+    
+    return fixedUrl;
   }
 
   // If the path starts with protocol-relative URL (//), add https:
-  if (imagePath.startsWith("//")) {
-    return `https:${imagePath}`;
+  if (path.startsWith("//")) {
+    return `https:${path}`;
   }
 
   // If the path is already an absolute URL, return as is
-  if (imagePath.startsWith("http://") || imagePath.startsWith("https://")) {
-    return imagePath;
+  if (path.startsWith("http://") || path.startsWith("https://")) {
+    return path;
   }
 
   // Otherwise, prepend the backend URL (local storage)
   const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
   const baseUrl = apiUrl.replace("/api", "");
-  return `${baseUrl}${imagePath}`;
+  return `${baseUrl}${path}`;
 };
