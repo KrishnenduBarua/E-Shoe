@@ -26,6 +26,9 @@ import adminAuthRoutes from "./routes/adminAuthRoutes.js";
 import adminProductRoutes from "./routes/adminProductRoutes.js";
 import adminOrderRoutes from "./routes/adminOrderRoutes.js";
 
+// Import setup routes
+import setupRoutes from "./routes/setupRoutes.js";
+
 // Import middleware
 import errorHandler from "./middleware/errorHandler.js";
 
@@ -122,6 +125,9 @@ app.use(
 app.get("/health", (req, res) => {
   res.json({ status: "OK", message: "Flick API is running" });
 });
+
+// Setup routes (for database initialization)
+app.use("/api/setup", setupRoutes);
 
 // API routes
 app.use("/api/auth", authRoutes);
