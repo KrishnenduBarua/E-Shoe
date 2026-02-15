@@ -91,8 +91,20 @@ export const uploadProductImages = upload.array("images", 10); // Max 10 images
 // Helper function to get image URL
 export const getImageUrl = (file) => {
   if (USE_CLOUDINARY) {
-    // Cloudinary URL
-    return file.path;
+    // Cloudinary URL - ensure it's a proper URL
+    let url = file.path;
+    
+    // Handle protocol-relative URLs from Cloudinary
+    if (url.startsWith("//")) {
+      return `https:${url}`;
+    }
+    
+    // Ensure URL has protocol
+    if (!url.startsWith("http://") && !url.startsWith("https://")) {
+      return `https://${url}`;
+    }
+    
+    return url;
   } else {
     // Local URL
     return `/uploads/products/${file.filename}`;
