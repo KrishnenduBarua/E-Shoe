@@ -25,8 +25,19 @@ if (DB_TYPE === "postgresql") {
     connectionTimeoutMillis: 10000,
   });
 
-  // PostgreSQL doesn't need promise() wrapper
-  pool.query = pool.query.bind(pool);
+  // Wrap PostgreSQL query to convert MySQL-style placeholders and match MySQL result format
+  const originalQuery = pool.query.bind(pool);
+  pool.query = async (sql, params) => {
+    // Convert MySQL ? placeholders to PostgreSQL $1, $2, etc.
+    let paramIndex = 0;
+    const convertedSql = sql.replace(/\?/g, () => `$${++paramIndex}`);
+    
+    // Execute query
+    const result = await originalQuery(convertedSql, params);
+    
+    // Return in MySQL format [rows, fields] for compatibility
+    return [result.rows, result.fields];
+  };
 } else {
   // MySQL configuration (for local development)
   const mysql = await import("mysql2");
