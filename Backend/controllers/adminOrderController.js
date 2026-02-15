@@ -392,8 +392,8 @@ export const getStats = async (req, res, next) => {
         SUM(CASE WHEN order_status = 'pending' THEN 1 ELSE 0 END) as pending_orders,
         SUM(CASE WHEN order_status = 'confirmed' THEN 1 ELSE 0 END) as confirmed_orders,
         SUM(CASE WHEN order_status = 'delivered' THEN 1 ELSE 0 END) as delivered_orders,
-        COALESCE(SUM(total), 0) as total_revenue,
-        COALESCE(SUM(CASE WHEN order_status = 'delivered' THEN total ELSE 0 END), 0) as delivered_revenue
+        COALESCE(SUM(total_amount), 0) as total_revenue,
+        COALESCE(SUM(CASE WHEN order_status = 'delivered' THEN total_amount ELSE 0 END), 0) as delivered_revenue
       FROM orders
     `);
 
@@ -403,7 +403,7 @@ export const getStats = async (req, res, next) => {
         COUNT(*) as total_products,
         COALESCE(SUM(stock_quantity), 0) as total_stock,
         SUM(CASE WHEN stock_quantity = 0 THEN 1 ELSE 0 END) as out_of_stock,
-        SUM(CASE WHEN is_featured = 1 THEN 1 ELSE 0 END) as featured_products
+        SUM(CASE WHEN is_featured = true THEN 1 ELSE 0 END) as featured_products
       FROM products
     `);
 
@@ -411,7 +411,7 @@ export const getStats = async (req, res, next) => {
     const [userStats] = await pool.query(`
       SELECT
         COUNT(*) as total_users,
-        COUNT(CASE WHEN DATE(created_at) >= DATE_SUB(NOW(), INTERVAL 30 DAY) THEN 1 END) as new_users_30days
+        COUNT(CASE WHEN created_at >= NOW() - INTERVAL '30 days' THEN 1 END) as new_users_30days
       FROM users
     `);
 
@@ -419,7 +419,7 @@ export const getStats = async (req, res, next) => {
     const [recentOrders] = await pool.query(`
       SELECT 
         o.id, o.order_number, o.shipping_name, o.shipping_phone, 
-        o.total, o.order_status, o.created_at,
+        o.total_amount as total, o.order_status, o.created_at,
         COALESCE(u.name, o.guest_name) as customer_name
       FROM orders o
       LEFT JOIN users u ON o.user_id = u.id
