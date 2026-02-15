@@ -29,7 +29,12 @@ export const initializeDatabase = async (req, res) => {
     console.log("✅ Database connection successful");
 
     // Read and execute SQL schema
-    const schemaPath = path.join(__dirname, "..", "config", "postgresql-schema.sql");
+    const schemaPath = path.join(
+      __dirname,
+      "..",
+      "config",
+      "postgresql-schema.sql",
+    );
     const schema = fs.readFileSync(schemaPath, "utf8");
 
     console.log("⚙️  Executing schema...");
@@ -94,7 +99,7 @@ export const checkDatabaseStatus = async (req, res) => {
     ];
 
     const isInitialized = expectedTables.every((table) =>
-      tables.includes(table)
+      tables.includes(table),
     );
 
     res.status(200).json({
@@ -107,6 +112,67 @@ export const checkDatabaseStatus = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Failed to check database status",
+      error: error.message,
+    });
+  }
+};
+
+// @desc    Verify and insert admin if missing
+// @route   GET /api/setup/verify-admin
+// @access  Public (one-time use)
+export const verifyAdmin = async (req, res) => {
+  try {
+    const setupKey = req.query.key;
+    const expectedKey = process.env.SETUP_KEY || "flick-setup-2026";
+
+    if (setupKey !== expectedKey) {
+      return res.status(403).json({
+        success: false,
+        message: "Invalid setup key",
+      });
+    }
+
+    // Check if admin exists
+    const [admins] = await pool.query(
+      "SELECT id, username, email, is_active FROM admins WHERE email = ?",
+      ["admin@flick.com"]
+    );
+
+    if (admins.length > 0) {
+      return res.status(200).json({
+        success: true,
+        message: "Admin user exists",
+        admin: admins[0],
+      });
+    }
+
+    // Admin doesn't exist, insert it
+    console.log("⚠️  Admin user not found, inserting...");
+    
+    // Password hash for 'admin123' using bcrypt with cost factor 10
+    const passwordHash = "$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy";
+    
+    await pool.query(
+      "INSERT INTO admins (username, email, password_hash, full_name, role) VALUES (?, ?, ?, ?, ?)",
+      ["admin", "admin@flick.com", passwordHash, "Super Admin", "super_admin"]
+    );
+
+    console.log("✅ Admin user created successfully");
+
+    res.status(200).json({
+      success: true,
+      message: "Admin user created successfully",
+      defaultAdmin: {
+        email: "admin@flick.com",
+        password: "admin123",
+        warning: "⚠️  Please change the admin password after first login!",
+      },
+    });
+  } catch (error) {
+    console.error("❌ Admin verification error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Admin verification failed",
       error: error.message,
     });
   }
