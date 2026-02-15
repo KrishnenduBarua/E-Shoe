@@ -5,6 +5,15 @@
 export const getImageUrl = (imagePath) => {
   if (!imagePath) return "";
 
+  // Fix malformed Cloudinary URLs (https// instead of https://)
+  if (imagePath.startsWith("https//")) {
+    return imagePath.replace("https//", "https://");
+  }
+  
+  if (imagePath.startsWith("http//")) {
+    return imagePath.replace("http//", "http://");
+  }
+
   // If the path starts with protocol-relative URL (//), add https:
   if (imagePath.startsWith("//")) {
     return `https:${imagePath}`;
