@@ -68,12 +68,12 @@ export const createProduct = async (req, res, next) => {
         imageUrls[0] || null,
         JSON.stringify(imageUrls),
         stock || 0,
-        isFeatured ? 1 : 0,
+        isFeatured ? true : false,
         is_active !== undefined
           ? is_active === "true" || is_active === true
-            ? 1
-            : 0
-          : 1,
+            ? true
+            : false
+          : true,
       ],
     );
 
@@ -193,11 +193,11 @@ export const updateProduct = async (req, res, next) => {
         imageUrls.length > 0 ? imageUrls[0] : null,
         imageUrls.length > 0 ? JSON.stringify(imageUrls) : null,
         stock,
-        isFeatured !== undefined ? (isFeatured ? 1 : 0) : null,
+        isFeatured !== undefined ? (isFeatured ? true : false) : null,
         is_active !== undefined
           ? is_active === "true" || is_active === true
-            ? 1
-            : 0
+            ? true
+            : false
           : null,
         id,
       ],
