@@ -50,7 +50,7 @@ app.use(
       if (!origin) return callback(null, true);
 
       // Allow all Vercel preview and production deployments (*.vercel.app)
-      if (origin.endsWith('.vercel.app')) {
+      if (origin.endsWith(".vercel.app")) {
         return callback(null, true);
       }
 
@@ -91,6 +91,9 @@ app.use(
     },
   }),
 );
+
+// Trust proxy - Required for Render and other proxy services
+app.set("trust proxy", 1);
 
 // Handle preflight requests explicitly
 app.options("*", cors());

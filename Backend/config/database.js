@@ -34,55 +34,80 @@ if (DB_TYPE === "postgresql") {
 
     // Detect INSERT queries and add RETURNING id for insertId compatibility
     const isInsert = /^\s*INSERT\s+INTO/i.test(convertedSql);
-    const finalSql = isInsert && !/RETURNING/i.test(convertedSql) 
-      ? convertedSql + ' RETURNING id' 
-      : convertedSql;
+    const finalSql =
+      isInsert && !/RETURNING/i.test(convertedSql)
+        ? convertedSql + " RETURNING id"
+        : convertedSql;
 
     // Execute query
     const result = await originalQuery(finalSql, params);
 
-    // Create MySQL-compatible result object
+    // Detect query type
+    const isSelect = /^\s*SELECT/i.test(convertedSql);
+    const isUpdate = /^\s*UPDATE/i.test(convertedSql);
+    const isDelete = /^\s*DELETE/i.test(convertedSql);
+
+    // For SELECT queries, return rows directly in MySQL format [rows, fields]
+    if (isSelect) {
+      return [result.rows, result.fields];
+    }
+
+    // For INSERT/UPDATE/DELETE, create MySQL-compatible result object
     const mysqlResult = {
-      rows: result.rows,
-      fields: result.fields,
       rowCount: result.rowCount,
       affectedRows: result.rowCount,
     };
 
     // Add insertId for INSERT queries
-    if (isInsert && result.rows && result.rows.length > 0 && result.rows[0].id) {
+    if (
+      isInsert &&
+      result.rows &&
+      result.rows.length > 0 &&
+      result.rows[0].id
+    ) {
       mysqlResult.insertId = result.rows[0].id;
     }
 
-    // Return in MySQL format [rows, fields] but rows is the result object for INSERT/UPDATE/DELETE
+    // Return result object for INSERT/UPDATE/DELETE
     return [mysqlResult, result.fields];
   };
 
   // Add getConnection for transaction support
   pool.getConnection = async () => {
     const client = await pool.connect();
-    
+
     // Wrap client query in the same way
     const originalClientQuery = client.query.bind(client);
     client.query = async (sql, params) => {
       let paramIndex = 0;
       const convertedSql = sql.replace(/\?/g, () => `$${++paramIndex}`);
-      
+
       const isInsert = /^\s*INSERT\s+INTO/i.test(convertedSql);
-      const finalSql = isInsert && !/RETURNING/i.test(convertedSql) 
-        ? convertedSql + ' RETURNING id' 
-        : convertedSql;
+      const isSelect = /^\s*SELECT/i.test(convertedSql);
+      const finalSql =
+        isInsert && !/RETURNING/i.test(convertedSql)
+          ? convertedSql + " RETURNING id"
+          : convertedSql;
 
       const result = await originalClientQuery(finalSql, params);
 
+      // For SELECT queries, return rows directly
+      if (isSelect) {
+        return [result.rows, result.fields];
+      }
+
+      // For INSERT/UPDATE/DELETE, create result object
       const mysqlResult = {
-        rows: result.rows,
-        fields: result.fields,
         rowCount: result.rowCount,
         affectedRows: result.rowCount,
       };
 
-      if (isInsert && result.rows && result.rows.length > 0 && result.rows[0].id) {
+      if (
+        isInsert &&
+        result.rows &&
+        result.rows.length > 0 &&
+        result.rows[0].id
+      ) {
         mysqlResult.insertId = result.rows[0].id;
       }
 
@@ -91,15 +116,15 @@ if (DB_TYPE === "postgresql") {
 
     // Add transaction methods
     client.beginTransaction = async () => {
-      await client.query('BEGIN', []);
+      await client.query("BEGIN", []);
     };
 
     client.commit = async () => {
-      await client.query('COMMIT', []);
+      await client.query("COMMIT", []);
     };
 
     client.rollback = async () => {
-      await client.query('ROLLBACK', []);
+      await client.query("ROLLBACK", []);
     };
 
     return client;
