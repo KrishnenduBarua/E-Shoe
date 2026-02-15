@@ -1,4 +1,5 @@
 import { pool } from "../config/database.js";
+import bcrypt from "bcryptjs";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -135,7 +136,7 @@ export const verifyAdmin = async (req, res) => {
     // Check if admin exists
     const [admins] = await pool.query(
       "SELECT id, username, email, is_active FROM admins WHERE email = ?",
-      ["admin@flick.com"]
+      ["admin@flick.com"],
     );
 
     if (admins.length > 0) {
@@ -148,13 +149,14 @@ export const verifyAdmin = async (req, res) => {
 
     // Admin doesn't exist, insert it
     console.log("⚠️  Admin user not found, inserting...");
-    
+
     // Password hash for 'admin123' using bcrypt with cost factor 10
-    const passwordHash = "$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy";
-    
+    const passwordHash =
+      "$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy";
+
     await pool.query(
       "INSERT INTO admins (username, email, password_hash, full_name, role) VALUES (?, ?, ?, ?, ?)",
-      ["admin", "admin@flick.com", passwordHash, "Super Admin", "super_admin"]
+      ["admin", "admin@flick.com", passwordHash, "Super Admin", "super_admin"],
     );
 
     console.log("✅ Admin user created successfully");
@@ -177,3 +179,65 @@ export const verifyAdmin = async (req, res) => {
     });
   }
 };
+
+// @desc    Test admin password (DEBUG ONLY)
+// @route   GET /api/setup/test-password
+// @access  Public (one-time use)
+export const testAdminPassword = async (req, res) => {
+  try {
+    const setupKey = req.query.key;
+    const expectedKey = process.env.SETUP_KEY || "flick-setup-2026";
+
+    if (setupKey !== expectedKey) {
+      return res.status(403).json({
+        success: false,
+        message: "Invalid setup key",
+      });
+    }
+
+    // Get admin with password hash
+    const [admins] = await pool.query(
+      "SELECT id, email, password_hash, is_active FROM admins WHERE email = ?",
+      ["admin@flick.com"]
+    );
+
+    if (admins.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Admin not found",
+      });
+    }
+
+    const admin = admins[0];
+    const testPassword = "admin123";
+
+    // Test bcrypt comparison
+    const isMatch = await bcrypt.compare(testPassword, admin.password_hash);
+
+    // Also test with the expected hash directly
+    const expectedHash = "$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy";
+    const expectedMatch = await bcrypt.compare(testPassword, expectedHash);
+
+    res.status(200).json({
+      success: true,
+      admin: {
+        id: admin.id,
+        email: admin.email,
+        is_active: admin.is_active,
+        password_hash_preview: admin.password_hash.substring(0, 20) + "...",
+      },
+      testPassword: testPassword,
+      bcryptMatch: isMatch,
+      expectedHashMatch: expectedMatch,
+      hashesMatch: admin.password_hash === expectedHash,
+    });
+  } catch (error) {
+    console.error("❌ Password test error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Password test failed",
+      error: error.message,
+    });
+  }
+};
+
