@@ -464,10 +464,9 @@ export const getAllUsers = async (req, res, next) => {
     let query = `
       SELECT 
         u.*,
-        COUNT(DISTINCT o.id) as order_count,
-        COALESCE(SUM(o.total), 0) as total_spent
+        (SELECT COUNT(*) FROM orders WHERE user_id = u.id) as order_count,
+        COALESCE((SELECT SUM(total_amount) FROM orders WHERE user_id = u.id), 0) as total_spent
       FROM users u
-      LEFT JOIN orders o ON u.id = o.user_id
     `;
 
     const params = [];
@@ -478,7 +477,7 @@ export const getAllUsers = async (req, res, next) => {
       params.push(`%${search}%`, `%${search}%`, `%${search}%`);
     }
 
-    query += " GROUP BY u.id ORDER BY u.created_at DESC LIMIT ? OFFSET ?";
+    query += " ORDER BY u.created_at DESC LIMIT ? OFFSET ?";
     params.push(limit, offset);
 
     const [users] = await pool.query(query, params);
