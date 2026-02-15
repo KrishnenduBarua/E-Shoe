@@ -198,7 +198,7 @@ export const testAdminPassword = async (req, res) => {
     // Get admin with password hash
     const [admins] = await pool.query(
       "SELECT id, email, password_hash, is_active FROM admins WHERE email = ?",
-      ["admin@flick.com"]
+      ["admin@flick.com"],
     );
 
     if (admins.length === 0) {
@@ -215,7 +215,8 @@ export const testAdminPassword = async (req, res) => {
     const isMatch = await bcrypt.compare(testPassword, admin.password_hash);
 
     // Also test with the expected hash directly
-    const expectedHash = "$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy";
+    const expectedHash =
+      "$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy";
     const expectedMatch = await bcrypt.compare(testPassword, expectedHash);
 
     res.status(200).json({
@@ -236,6 +237,74 @@ export const testAdminPassword = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Password test failed",
+      error: error.message,
+    });
+  }
+};
+
+// @desc    Reset admin password
+// @route   GET /api/setup/reset-admin-password
+// @access  Public (one-time use)
+export const resetAdminPassword = async (req, res) => {
+  try {
+    const setupKey = req.query.key;
+    const expectedKey = process.env.SETUP_KEY || "flick-setup-2026";
+
+    if (setupKey !== expectedKey) {
+      return res.status(403).json({
+        success: false,
+        message: "Invalid setup key",
+      });
+    }
+
+    const newPassword = "admin123";
+    
+    // Generate a fresh hash for admin123
+    const salt = await bcrypt.genSalt(10);
+    const passwordHash = await bcrypt.hash(newPassword, salt);
+
+    console.log("🔐 Generated new password hash for admin123");
+
+    // Update admin password
+    await pool.query(
+      "UPDATE admins SET password_hash = ? WHERE email = ?",
+      [passwordHash, "admin@flick.com"]
+    );
+
+    console.log("✅ Admin password updated successfully");
+
+    // Verify the update worked
+    const [admins] = await pool.query(
+      "SELECT id, email, password_hash FROM admins WHERE email = ?",
+      ["admin@flick.com"]
+    );
+
+    if (admins.length > 0) {
+      const testMatch = await bcrypt.compare(newPassword, admins[0].password_hash);
+      
+      res.status(200).json({
+        success: true,
+        message: "Admin password reset successfully",
+        credentials: {
+          email: "admin@flick.com",
+          password: "admin123",
+        },
+        verification: {
+          passwordMatches: testMatch,
+          hashPreview: admins[0].password_hash.substring(0, 20) + "...",
+        },
+      });
+    } else {
+      res.status(404).json({
+        success: false,
+        message: "Admin not found after update",
+      });
+    }
+  } catch (error) {
+    console.error("❌ Password reset error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Password reset failed",
       error: error.message,
     });
   }

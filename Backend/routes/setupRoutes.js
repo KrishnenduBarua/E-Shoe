@@ -4,6 +4,7 @@ import {
   checkDatabaseStatus,
   verifyAdmin,
   testAdminPassword,
+  resetAdminPassword,
 } from "../controllers/setupController.js";
 
 const router = express.Router();
@@ -19,5 +20,8 @@ router.get("/verify-admin", verifyAdmin);
 
 // Test admin password (DEBUG)
 router.get("/test-password", testAdminPassword);
+
+// Reset admin password
+router.get("/reset-admin-password", resetAdminPassword);
 
 export default router;
