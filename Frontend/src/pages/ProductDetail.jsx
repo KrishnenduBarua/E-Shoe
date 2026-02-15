@@ -108,7 +108,7 @@ const ProductDetail = () => {
             <div>
               <div className="aspect-square mb-4 overflow-hidden rounded-lg">
                 <img
-                  src={`${(import.meta.env.VITE_API_URL || "http://localhost:5000/api").replace("/api", "")}${product.images[selectedImage]}`}
+                  src={getImageUrl(product.images[selectedImage])}
                   alt={product.name}
                   className="w-full h-full object-cover"
                 />
@@ -125,7 +125,7 @@ const ProductDetail = () => {
                     }`}
                   >
                     <img
-                      src={`${(import.meta.env.VITE_API_URL || "http://localhost:5000/api").replace("/api", "")}${image}`}
+                      src={getImageUrl(image)}
                       alt={`${product.name} ${index + 1}`}
                       className="w-full h-full object-cover"
                     />

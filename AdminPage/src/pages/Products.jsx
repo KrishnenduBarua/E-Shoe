@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { adminApi } from "../utils/adminApi";
+import { adminApi, getImageUrl } from "../utils/adminApi";
 import { FiPlus, FiEdit, FiTrash2, FiSearch } from "react-icons/fi";
 
 export default function Products() {
@@ -139,7 +139,7 @@ export default function Products() {
                         <td>
                           {product.images && product.images.length > 0 ? (
                             <img
-                              src={`${(import.meta.env.VITE_API_URL || "http://localhost:5000/api").replace("/api", "")}${product.images[0]}`}
+                              src={getImageUrl(product.images[0])}
                               alt={product.name}
                               className="product-thumbnail"
                             />

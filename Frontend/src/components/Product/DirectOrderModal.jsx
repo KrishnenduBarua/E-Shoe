@@ -199,7 +199,7 @@ Please keep your phone accessible. Thank you for shopping with us!
               <img
                 src={
                   product.image || product.images?.[0]
-                    ? `${(import.meta.env.VITE_API_URL || "http://localhost:5000/api").replace("/api", "")}${product.image || product.images?.[0]}`
+                    ? getImageUrl(product.image || product.images?.[0])
                     : "https://via.placeholder.com/80"
                 }
                 alt={product.name}

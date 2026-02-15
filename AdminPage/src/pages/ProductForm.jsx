@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { adminApi } from "../utils/adminApi";
+import { adminApi, getImageUrl } from "../utils/adminApi";
 
 export default function ProductForm() {
   const { id } = useParams();
@@ -320,7 +320,7 @@ export default function ProductForm() {
                       className="image-preview-item"
                     >
                       <img
-                        src={`${(import.meta.env.VITE_API_URL || "http://localhost:5000/api").replace("/api", "")}${image}`}
+                        src={getImageUrl(image)}
                         alt={`Existing ${index + 1}`}
                       />
                       <button

@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { FiShoppingCart, FiHeart } from "react-icons/fi";
 import useCartStore from "../../store/cartStore";
 import { sanitizeHTML } from "../../utils/security";
+import { getImageUrl } from "../../utils/imageHelper";
 
 const ProductCard = ({ product }) => {
   const { addItem } = useCartStore();
@@ -24,7 +25,7 @@ const ProductCard = ({ product }) => {
         <img
           src={
             product.image
-              ? `${(import.meta.env.VITE_API_URL || "http://localhost:5000/api").replace("/api", "")}${product.image}`
+              ? getImageUrl(product.image)
               : "https://via.placeholder.com/400"
           }
           alt={product.name}

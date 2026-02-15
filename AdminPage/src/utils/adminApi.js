@@ -3,6 +3,18 @@ import Cookies from "js-cookie";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
+// Helper function to get image URL
+export const getImageUrl = (imagePath) => {
+  if (!imagePath) return "";
+  // If the path is already an absolute URL (Cloudinary), return as is
+  if (imagePath.startsWith("http://") || imagePath.startsWith("https://")) {
+    return imagePath;
+  }
+  // Otherwise, prepend the backend URL (local storage)
+  const baseUrl = API_URL.replace("/api", "");
+  return `${baseUrl}${imagePath}`;
+};
+
 const apiClient = axios.create({
   baseURL: `${API_URL}/admin`,
   timeout: 10000,
