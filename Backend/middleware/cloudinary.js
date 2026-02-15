@@ -92,18 +92,19 @@ export const uploadProductImages = upload.array("images", 10); // Max 10 images
 export const getImageUrl = (file) => {
   if (USE_CLOUDINARY) {
     // Cloudinary URL - ensure it's a proper URL
-    let url = file.path;
-    
-    // Handle protocol-relative URLs from Cloudinary
-    if (url.startsWith("//")) {
-      return `https:${url}`;
-    }
-    
-    // Ensure URL has protocol
-    if (!url.startsWith("http://") && !url.startsWith("https://")) {
+    let url = String(file.path).trim();
+
+    // Fix malformed protocols using regex
+    url = url
+      .replace(/^https\/\//, "https://")  // Fix https//
+      .replace(/^http\/\//, "http://")    // Fix http//
+      .replace(/^\/\//, "https://");      // Fix //
+
+    // Ensure URL has protocol if it doesn't already
+    if (!url.match(/^https?:\/\//)) {
       return `https://${url}`;
     }
-    
+
     return url;
   } else {
     // Local URL
