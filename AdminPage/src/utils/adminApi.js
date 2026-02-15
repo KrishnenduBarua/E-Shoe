@@ -53,8 +53,6 @@ export const getImageUrl = (imagePath) => {
   const baseUrl = API_URL.replace("/api", "");
   return `${baseUrl}${imagePath}`;
 };
-  return `${baseUrl}${imagePath}`;
-};
 
 const apiClient = axios.create({
   baseURL: `${API_URL}/admin`,
