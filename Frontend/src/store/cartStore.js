@@ -1,19 +1,27 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { persist, createJSONStorage } from "zustand/middleware";
 
 const useCartStore = create(
   persist(
     (set, get) => ({
       items: [],
 
+      // Generate unique key for cart item (product id + size)
+      getItemKey: (item) => {
+        return `${item.id}_${item.selectedSize || "default"}`;
+      },
+
       addItem: (product, quantity = 1) => {
         const items = get().items;
-        const existingItem = items.find((item) => item.id === product.id);
+        const itemKey = get().getItemKey(product);
+        const existingItem = items.find(
+          (item) => get().getItemKey(item) === itemKey,
+        );
 
         if (existingItem) {
           set({
             items: items.map((item) =>
-              item.id === product.id
+              get().getItemKey(item) === itemKey
                 ? { ...item, quantity: item.quantity + quantity }
                 : item,
             ),
@@ -23,19 +31,25 @@ const useCartStore = create(
         }
       },
 
-      removeItem: (productId) => {
-        set({ items: get().items.filter((item) => item.id !== productId) });
+      removeItem: (productId, selectedSize) => {
+        const itemKey = `${productId}_${selectedSize || "default"}`;
+        set({
+          items: get().items.filter(
+            (item) => get().getItemKey(item) !== itemKey,
+          ),
+        });
       },
 
-      updateQuantity: (productId, quantity) => {
+      updateQuantity: (productId, selectedSize, quantity) => {
         if (quantity <= 0) {
-          get().removeItem(productId);
+          get().removeItem(productId, selectedSize);
           return;
         }
 
+        const itemKey = `${productId}_${selectedSize || "default"}`;
         set({
           items: get().items.map((item) =>
-            item.id === productId ? { ...item, quantity } : item,
+            get().getItemKey(item) === itemKey ? { ...item, quantity } : item,
           ),
         });
       },
@@ -55,7 +69,7 @@ const useCartStore = create(
     }),
     {
       name: "cart-storage",
-      getStorage: () => localStorage,
+      storage: createJSONStorage(() => localStorage),
     },
   ),
 );

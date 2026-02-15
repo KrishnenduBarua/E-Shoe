@@ -27,15 +27,10 @@ function App() {
         <Route path="about" element={<About />} />
         <Route path="contact" element={<Contact />} />
 
+        {/* Checkout - supports both guest and logged-in users */}
+        <Route path="checkout" element={<Checkout />} />
+
         {/* Protected Routes */}
-        <Route
-          path="checkout"
-          element={
-            <ProtectedRoute>
-              <Checkout />
-            </ProtectedRoute>
-          }
-        />
         <Route
           path="profile"
           element={

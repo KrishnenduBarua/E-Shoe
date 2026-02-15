@@ -5,16 +5,15 @@ const About = () => {
   return (
     <>
       <Helmet>
-        <title>About Us - E-Shoe</title>
+        <title>About Us - Flick</title>
       </Helmet>
 
       <div className="bg-white">
         {/* Hero Section */}
-        <div className="bg-gradient-to-r from-primary-600 to-primary-800 text-white py-20">
-          <div className="container-custom text-center">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">
-              About E-Shoe
-            </h1>
+        <div className="relative bg-black text-white py-20 overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-black via-gray-900 to-black opacity-90"></div>
+          <div className="container-custom text-center relative z-10">
+            <h1 className="text-4xl md:text-5xl font-bold mb-4">About Flick</h1>
             <p className="text-xl max-w-2xl mx-auto">
               Your trusted partner for premium footwear since 2020
             </p>
@@ -26,7 +25,7 @@ const About = () => {
           <div className="max-w-3xl mx-auto text-center">
             <h2 className="text-3xl font-bold text-gray-900 mb-6">Our Story</h2>
             <p className="text-gray-600 leading-relaxed mb-4">
-              E-Shoe was founded with a simple mission: to provide high-quality,
+              Flick was founded with a simple mission: to provide high-quality,
               stylish footwear at affordable prices. We believe everyone
               deserves to step out in confidence, and we're committed to making
               that possible.
@@ -47,7 +46,7 @@ const About = () => {
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="text-center">
-                <div className="bg-primary-600 text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
+                <div className="bg-black text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
                   ✨
                 </div>
                 <h3 className="text-xl font-bold mb-2">Quality</h3>
@@ -57,7 +56,7 @@ const About = () => {
                 </p>
               </div>
               <div className="text-center">
-                <div className="bg-primary-600 text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
+                <div className="bg-black text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
                   💰
                 </div>
                 <h3 className="text-xl font-bold mb-2">Affordability</h3>
@@ -67,7 +66,7 @@ const About = () => {
                 </p>
               </div>
               <div className="text-center">
-                <div className="bg-primary-600 text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
+                <div className="bg-black text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
                   🤝
                 </div>
                 <h3 className="text-xl font-bold mb-2">Trust</h3>

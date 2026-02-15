@@ -99,16 +99,8 @@ export const api = {
   products: {
     getAll: (params) => apiClient.get("/products", { params }),
     getById: (id) => apiClient.get(`/products/${id}`),
-    getByCategory: (category, params) =>
-      apiClient.get(`/products/category/${category}`, { params }),
     search: (query) =>
       apiClient.get("/products/search", { params: { q: query } }),
-  },
-
-  // Category endpoints
-  categories: {
-    getAll: () => apiClient.get("/categories"),
-    getById: (id) => apiClient.get(`/categories/${id}`),
   },
 
   // Cart endpoints
@@ -125,6 +117,7 @@ export const api = {
   // Order endpoints
   orders: {
     create: (orderData) => apiClient.post("/orders", orderData),
+    createDirect: (orderData) => apiClient.post("/orders/direct", orderData),
     getAll: () => apiClient.get("/orders"),
     getById: (id) => apiClient.get(`/orders/${id}`),
     cancel: (id) => apiClient.post(`/orders/${id}/cancel`),

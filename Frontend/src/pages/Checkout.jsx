@@ -1,13 +1,16 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { FiLock } from "react-icons/fi";
 import useCartStore from "../store/cartStore";
+import useAuthStore from "../store/authStore";
 import { sanitizeInput, validateEmail, validatePhone } from "../utils/security";
+import { api } from "../utils/api";
 
 const Checkout = () => {
   const navigate = useNavigate();
   const { items, getTotal, clearCart } = useCartStore();
+  const { user } = useAuthStore();
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [formData, setFormData] = useState({
@@ -36,6 +39,13 @@ const Checkout = () => {
     saveInfo: false,
     newsletter: false,
   });
+
+  // Redirect to cart if no items
+  useEffect(() => {
+    if (items.length === 0) {
+      navigate("/cart");
+    }
+  }, [items, navigate]);
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -115,15 +125,41 @@ const Checkout = () => {
     setLoading(true);
 
     try {
-      // Simulate API call - Replace with actual API
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      // Prepare order data
+      const orderData = {
+        items: items.map((item) => ({
+          productId: item.id,
+          quantity: item.quantity,
+          selectedSize: item.selectedSize || null,
+          selectedColor: item.selectedColor || null,
+        })),
+        shippingInfo: {
+          name: `${formData.firstName} ${formData.lastName}`,
+          phone: formData.phone,
+          email: formData.email,
+          address: `${formData.address}${formData.apartment ? ", " + formData.apartment : ""}`,
+          city: formData.city,
+          state: formData.state,
+          zip: formData.zipCode,
+          country: formData.country,
+        },
+        paymentMethod: formData.paymentMethod === "card" ? "Card" : "COD",
+        isGuest: !user, // Flag for guest checkout
+      };
+
+      // Create order via API
+      const response = await api.orders.create(orderData);
+      const orderId = response.data.data.id;
 
       // Clear cart and redirect to success page
       clearCart();
-      navigate("/order-success");
+      navigate(`/order-success?orderId=${orderId}`);
     } catch (error) {
       console.error("Order failed:", error);
-      alert("Payment failed. Please try again.");
+      const errorMessage =
+        error.response?.data?.message ||
+        "Failed to create order. Please try again.";
+      alert(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -137,17 +173,28 @@ const Checkout = () => {
   return (
     <>
       <Helmet>
-        <title>Secure Checkout - E-Shoe</title>
+        <title>Secure Checkout - Flick</title>
       </Helmet>
 
       <div className="bg-gray-50 min-h-screen py-8">
         <div className="container-custom">
-          <div className="flex items-center justify-center gap-2 mb-8">
+          <div className="flex items-center justify-center gap-2 mb-4">
             <FiLock className="text-green-600" size={24} />
             <h1 className="text-3xl font-bold text-gray-900">
               Secure Checkout
             </h1>
           </div>
+
+          {/* Guest Checkout Notice */}
+          {!user && (
+            <div className="max-w-2xl mx-auto mb-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <p className="text-sm text-blue-800">
+                <strong>Guest Checkout:</strong> You can complete your order
+                without creating an account. Your order details will be sent to
+                your email address.
+              </p>
+            </div>
+          )}
 
           <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -158,6 +205,24 @@ const Checkout = () => {
                   <h2 className="text-xl font-bold text-gray-900 mb-4">
                     Contact Information
                   </h2>
+
+                  {/* Login/Register suggestion for guests */}
+                  {!user && (
+                    <div className="mb-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                      <p className="text-sm text-gray-700">
+                        Already have an account?{" "}
+                        <Link
+                          to="/login"
+                          state={{ from: { pathname: "/checkout" } }}
+                          className="text-blue-600 hover:text-blue-800 font-semibold"
+                        >
+                          Sign in
+                        </Link>{" "}
+                        for faster checkout.
+                      </p>
+                    </div>
+                  )}
+
                   <div className="space-y-4">
                     <div>
                       <label className="block text-sm font-semibold text-gray-900 mb-1">
@@ -487,7 +552,7 @@ const Checkout = () => {
                           <p className="text-xs text-gray-600">
                             Qty: {item.quantity}
                           </p>
-                          <p className="text-sm font-semibold text-primary-600">
+                          <p className="text-sm font-semibold text-black">
                             ${(item.price * item.quantity).toFixed(2)}
                           </p>
                         </div>
@@ -513,9 +578,7 @@ const Checkout = () => {
                     </div>
                     <div className="border-t pt-2 flex justify-between text-lg font-bold text-gray-900">
                       <span>Total</span>
-                      <span className="text-primary-600">
-                        ${total.toFixed(2)}
-                      </span>
+                      <span className="text-black">${total.toFixed(2)}</span>
                     </div>
                   </div>
 

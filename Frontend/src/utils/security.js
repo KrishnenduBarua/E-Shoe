@@ -81,13 +81,28 @@ export const validatePassword = (password) => {
 };
 
 /**
- * Validate phone number
+ * Validate phone number (Bangladesh format)
  * @param {string} phone - Phone number to validate
  * @returns {boolean} True if valid phone number
  */
 export const validatePhone = (phone) => {
-  const phoneRegex = /^[\d\s\-\+\(\)]+$/;
-  return phoneRegex.test(phone) && phone.replace(/\D/g, "").length >= 10;
+  if (!phone) return false;
+
+  // Remove all spaces, dashes, and special characters
+  const cleaned = phone.replace(/[\s\-()]/g, "");
+
+  // Bangladesh phone number patterns:
+  // 1. With country code: +880 1XXX XXXXXX (11 digits after +880)
+  // 2. Without country code: 01XXX XXXXXX (11 digits starting with 01)
+  // 3. International format: 880 1XXX XXXXXX
+
+  const patterns = [
+    /^\+8801[3-9]\d{8}$/, // +880 1XXX XXXXXX (11 digits)
+    /^8801[3-9]\d{8}$/, // 880 1XXX XXXXXX (without +)
+    /^01[3-9]\d{8}$/, // 01XXX XXXXXX (local format)
+  ];
+
+  return patterns.some((pattern) => pattern.test(cleaned));
 };
 
 /**
@@ -139,9 +154,16 @@ class RateLimiter {
     this.maxRequests = maxRequests;
     this.timeWindow = timeWindow;
     this.requests = [];
+    // Disable rate limiting in development mode
+    this.isEnabled = import.meta.env.PROD;
   }
 
   canMakeRequest() {
+    // Skip rate limiting in development
+    if (!this.isEnabled) {
+      return true;
+    }
+
     const now = Date.now();
     this.requests = this.requests.filter(
       (time) => now - time < this.timeWindow,
@@ -156,7 +178,8 @@ class RateLimiter {
   }
 }
 
-export const apiRateLimiter = new RateLimiter();
+// More lenient limits: 100 requests per 60 seconds
+export const apiRateLimiter = new RateLimiter(100, 60000);
 
 /**
  * Validate URL to prevent open redirect attacks

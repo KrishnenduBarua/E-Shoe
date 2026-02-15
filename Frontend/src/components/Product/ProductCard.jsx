@@ -22,7 +22,11 @@ const ProductCard = ({ product }) => {
       <div className="relative overflow-hidden aspect-square">
         {discount > 0 && <div className="badge-discount">{discount}% OFF</div>}
         <img
-          src={product.image || "https://via.placeholder.com/400"}
+          src={
+            product.image
+              ? `${(import.meta.env.VITE_API_URL || "http://localhost:5000/api").replace("/api", "")}${product.image}`
+              : "https://via.placeholder.com/400"
+          }
           alt={product.name}
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
           loading="lazy"
@@ -32,7 +36,7 @@ const ProductCard = ({ product }) => {
         <div className="absolute top-2 right-2 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
           <button
             onClick={handleAddToCart}
-            className="bg-white p-2 rounded-full shadow-md hover:bg-primary-600 hover:text-white transition-colors"
+            className="bg-white p-2 rounded-full shadow-md hover:bg-black hover:text-white transition-colors"
             title="Add to Cart"
           >
             <FiShoppingCart size={18} />
@@ -51,14 +55,12 @@ const ProductCard = ({ product }) => {
       </div>
 
       <div className="p-4">
-        <h3 className="font-semibold text-gray-800 mb-2 line-clamp-2 group-hover:text-primary-600 transition-colors">
+        <h3 className="font-semibold text-gray-800 mb-2 line-clamp-2 group-hover:text-black transition-colors">
           {product.name}
         </h3>
 
         <div className="flex items-center gap-2 mb-3">
-          <span className="text-xl font-bold text-primary-600">
-            ${product.price}
-          </span>
+          <span className="text-xl font-bold text-black">${product.price}</span>
           {product.originalPrice && (
             <span className="text-sm text-gray-500 line-through">
               ${product.originalPrice}

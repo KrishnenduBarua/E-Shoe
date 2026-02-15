@@ -3,6 +3,8 @@ import { useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import ProductGrid from "../components/Product/ProductGrid";
 import { FiFilter } from "react-icons/fi";
+import { api } from "../utils/api";
+import { transformProduct } from "../utils/transformers";
 
 const Products = () => {
   const [searchParams] = useSearchParams();
@@ -13,24 +15,34 @@ const Products = () => {
     sortBy: "featured",
     priceRange: "all",
     size: "all",
-    category: "all",
   });
 
   useEffect(() => {
-    // Simulate API call
-    setTimeout(() => {
-      const mockProducts = Array(12)
-        .fill(null)
-        .map((_, i) => ({
-          id: i + 1,
-          name: `Premium Shoe ${i + 1}`,
-          price: 50 + i * 10,
-          originalPrice: 80 + i * 10,
-          image: `https://images.unsplash.com/photo-${1542291026 + i}-7eec264c27ff?w=400`,
-        }));
-      setProducts(mockProducts);
-      setLoading(false);
-    }, 500);
+    const fetchProducts = async () => {
+      setLoading(true);
+      try {
+        const params = {
+          sortBy: filters.sortBy,
+        };
+
+        // Add filters
+        if (filters.priceRange && filters.priceRange !== "all") {
+          const [min, max] = filters.priceRange.split("-");
+          if (min) params.minPrice = min;
+          if (max) params.maxPrice = max;
+        }
+
+        const response = await api.products.getAll(params);
+        setProducts(response.data.data);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+        setProducts([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
   }, [searchParams, filters]);
 
   const handleFilterChange = (key, value) => {
@@ -40,7 +52,7 @@ const Products = () => {
   return (
     <>
       <Helmet>
-        <title>Shop All Products - E-Shoe</title>
+        <title>Shop All Products - Flick</title>
         <meta
           name="description"
           content="Browse our complete collection of premium shoes"
@@ -113,27 +125,6 @@ const Products = () => {
                   </select>
                 </div>
 
-                {/* Category */}
-                <div className="mb-6">
-                  <label className="block text-sm font-semibold text-gray-900 mb-2">
-                    Category
-                  </label>
-                  <select
-                    value={filters.category}
-                    onChange={(e) =>
-                      handleFilterChange("category", e.target.value)
-                    }
-                    className="w-full input-field"
-                  >
-                    <option value="all">All Categories</option>
-                    <option value="mens">Men's Shoes</option>
-                    <option value="womens">Women's Shoes</option>
-                    <option value="sports">Sports</option>
-                    <option value="casual">Casual</option>
-                    <option value="formal">Formal</option>
-                  </select>
-                </div>
-
                 {/* Size */}
                 <div className="mb-6">
                   <label className="block text-sm font-semibold text-gray-900 mb-2">
@@ -160,7 +151,6 @@ const Products = () => {
                       sortBy: "featured",
                       priceRange: "all",
                       size: "all",
-                      category: "all",
                     })
                   }
                   className="w-full btn-secondary text-sm"

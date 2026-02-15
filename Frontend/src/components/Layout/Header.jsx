@@ -11,6 +11,7 @@ import {
 import useAuthStore from "../../store/authStore";
 import useCartStore from "../../store/cartStore";
 import { sanitizeInput } from "../../utils/security";
+import FlickLogo from "../Photos/Filck_logo.ico";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -53,25 +54,16 @@ const Header = () => {
     navigate("/");
   };
 
-  const categories = [
-    { name: "Men's Shoes", path: "/products/mens" },
-    { name: "Women's Shoes", path: "/products/womens" },
-    { name: "Sports", path: "/products/sports" },
-    { name: "Casual", path: "/products/casual" },
-    { name: "Formal", path: "/products/formal" },
-    { name: "Sneakers", path: "/products/sneakers" },
-  ];
-
   return (
-    <header className="bg-white shadow-md sticky top-0 z-50">
+    <header className="bg-black shadow-xl sticky top-0 z-50">
       {/* Top Bar */}
-      <div className="bg-primary-600 text-white py-2">
+      <div className="bg-gray-900 text-gray-300 py-1 border-b border-gray-800">
         <div className="container-custom flex justify-between items-center text-sm">
           <div className="flex items-center gap-4">
-            <Link to="/about" className="hover:underline">
+            <Link to="/about" className="hover:text-white transition-colors">
               About
             </Link>
-            <Link to="/contact" className="hover:underline">
+            <Link to="/contact" className="hover:text-white transition-colors">
               Contact
             </Link>
           </div>
@@ -79,11 +71,23 @@ const Header = () => {
       </div>
 
       {/* Main Header */}
-      <div className="container-custom py-4">
+      <div className="container-custom py-2">
         <div className="flex items-center justify-between gap-4">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2">
-            <div className="text-3xl font-bold text-primary-600">E-Shoe</div>
+          <Link
+            to="/"
+            className="flex items-center gap-2 flex-shrink-0 bg-gray-800 rounded-lg px-2 py-1.5 hover:bg-gray-700 transition-colors overflow-hidden"
+          >
+            <img
+              src={FlickLogo}
+              alt="Flick"
+              className="h-10 md:h-12 w-auto object-contain"
+              style={{ transform: "scale(2.5)" }}
+              onError={(e) => {
+                console.error("Logo failed to load:", e);
+                e.target.style.display = "none";
+              }}
+            />
           </Link>
 
           {/* Desktop Search */}
@@ -97,12 +101,12 @@ const Header = () => {
                 placeholder="Search for shoes..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full px-4 py-2 pr-12 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="w-full px-4 py-2 pr-12 bg-gray-900 border border-gray-700 text-white placeholder-gray-400 rounded-full focus:outline-none focus:ring-2 focus:ring-white focus:border-white"
                 maxLength={100}
               />
               <button
                 type="submit"
-                className="absolute right-0 top-0 h-full px-4 text-gray-600 hover:text-primary-600 transition-colors"
+                className="absolute right-0 top-0 h-full px-4 text-gray-400 hover:text-white transition-colors"
               >
                 <FiSearch size={20} />
               </button>
@@ -114,7 +118,7 @@ const Header = () => {
             {/* Mobile Search Toggle */}
             <button
               onClick={() => setIsSearchOpen(!isSearchOpen)}
-              className="md:hidden text-gray-700 hover:text-primary-600 transition-colors"
+              className="md:hidden text-gray-300 hover:text-white transition-colors"
             >
               <FiSearch size={24} />
             </button>
@@ -123,7 +127,7 @@ const Header = () => {
             {isAuthenticated && (
               <Link
                 to="/wishlist"
-                className="hidden sm:flex text-gray-700 hover:text-primary-600 transition-colors"
+                className="hidden sm:flex text-gray-300 hover:text-white transition-colors"
               >
                 <FiHeart size={24} />
               </Link>
@@ -132,7 +136,7 @@ const Header = () => {
             {/* Cart */}
             <Link
               to="/cart"
-              className="relative text-gray-700 hover:text-primary-600 transition-colors"
+              className="relative text-gray-300 hover:text-white transition-colors"
             >
               <FiShoppingCart size={24} />
               {cartItemCount > 0 && (
@@ -146,7 +150,7 @@ const Header = () => {
             <div className="relative" ref={userMenuRef}>
               <button
                 onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                className="text-gray-700 hover:text-primary-600 transition-colors"
+                className="text-gray-300 hover:text-white transition-colors"
               >
                 <FiUser size={24} />
               </button>
@@ -209,7 +213,7 @@ const Header = () => {
             {/* Mobile Menu Toggle */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="lg:hidden text-gray-700 hover:text-primary-600 transition-colors"
+              className="lg:hidden text-gray-300 hover:text-white transition-colors"
             >
               {isMenuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
             </button>
@@ -225,13 +229,13 @@ const Header = () => {
                 placeholder="Search for shoes..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full px-4 py-2 pr-12 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="w-full px-4 py-2 pr-12 bg-gray-900 border border-gray-700 text-white placeholder-gray-400 rounded-full focus:outline-none focus:ring-2 focus:ring-white"
                 maxLength={100}
                 autoFocus
               />
               <button
                 type="submit"
-                className="absolute right-0 top-0 h-full px-4 text-gray-600 hover:text-primary-600"
+                className="absolute right-0 top-0 h-full px-4 text-gray-400 hover:text-white"
               >
                 <FiSearch size={20} />
               </button>
@@ -239,42 +243,6 @@ const Header = () => {
           </form>
         )}
       </div>
-
-      {/* Navigation */}
-      <nav className="bg-gray-50 border-t border-gray-200">
-        <div className="container-custom">
-          {/* Desktop Navigation */}
-          <ul className="hidden lg:flex items-center justify-center gap-8 py-3">
-            {categories.map((category) => (
-              <li key={category.path}>
-                <Link
-                  to={category.path}
-                  className="text-gray-700 hover:text-primary-600 font-medium transition-colors"
-                >
-                  {category.name}
-                </Link>
-              </li>
-            ))}
-          </ul>
-
-          {/* Mobile Navigation */}
-          {isMenuOpen && (
-            <ul className="lg:hidden py-4 space-y-2">
-              {categories.map((category) => (
-                <li key={category.path}>
-                  <Link
-                    to={category.path}
-                    className="block py-2 text-gray-700 hover:text-primary-600 font-medium transition-colors"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    {category.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-      </nav>
     </header>
   );
 };

@@ -9,9 +9,13 @@ import {
   FiTruck,
   FiShield,
   FiRefreshCw,
+  FiShoppingBag,
 } from "react-icons/fi";
 import useCartStore from "../store/cartStore";
 import Loading from "../components/Common/Loading";
+import DirectOrderModal from "../components/Product/DirectOrderModal";
+import { api } from "../utils/api";
+import { transformProduct } from "../utils/transformers";
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -21,38 +25,26 @@ const ProductDetail = () => {
   const [selectedSize, setSelectedSize] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
+  const [showOrderModal, setShowOrderModal] = useState(false);
 
   const { addItem } = useCartStore();
 
   useEffect(() => {
-    // Simulate API call - Replace with actual API
-    setTimeout(() => {
-      const mockProduct = {
-        id: parseInt(id),
-        name: "Premium Running Shoes",
-        description:
-          "Experience ultimate comfort and style with our premium running shoes. Designed with advanced cushioning technology and breathable materials for maximum performance.",
-        price: 89.99,
-        originalPrice: 129.99,
-        images: [
-          "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800",
-          "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=800",
-          "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=800",
-        ],
-        sizes: ["US 7", "US 8", "US 9", "US 10", "US 11", "US 12"],
-        colors: ["Black", "White", "Blue", "Red"],
-        inStock: true,
-        features: [
-          "Breathable mesh upper",
-          "Advanced cushioning technology",
-          "Durable rubber outsole",
-          "Lightweight design",
-          "Enhanced arch support",
-        ],
-      };
-      setProduct(mockProduct);
-      setLoading(false);
-    }, 500);
+    const fetchProduct = async () => {
+      setLoading(true);
+      try {
+        const response = await api.products.getById(id);
+        const transformedProduct = transformProduct(response.data.data);
+        setProduct(transformedProduct);
+      } catch (error) {
+        console.error("Error fetching product:", error);
+        setProduct(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProduct();
   }, [id]);
 
   const handleAddToCart = () => {
@@ -64,6 +56,14 @@ const ProductDetail = () => {
     addItem({ ...product, selectedSize }, quantity);
     // Show success message or redirect to cart
     navigate("/cart");
+  };
+
+  const handleOrderNow = () => {
+    if (!selectedSize) {
+      alert("Please select a size");
+      return;
+    }
+    setShowOrderModal(true);
   };
 
   const handleQuantityChange = (change) => {
@@ -97,7 +97,7 @@ const ProductDetail = () => {
   return (
     <>
       <Helmet>
-        <title>{product.name} - E-Shoe</title>
+        <title>{product.name} - Flick</title>
         <meta name="description" content={product.description} />
       </Helmet>
 
@@ -108,7 +108,7 @@ const ProductDetail = () => {
             <div>
               <div className="aspect-square mb-4 overflow-hidden rounded-lg">
                 <img
-                  src={product.images[selectedImage]}
+                  src={`${(import.meta.env.VITE_API_URL || "http://localhost:5000/api").replace("/api", "")}${product.images[selectedImage]}`}
                   alt={product.name}
                   className="w-full h-full object-cover"
                 />
@@ -120,12 +120,12 @@ const ProductDetail = () => {
                     onClick={() => setSelectedImage(index)}
                     className={`aspect-square overflow-hidden rounded-lg border-2 ${
                       selectedImage === index
-                        ? "border-primary-600"
+                        ? "border-black"
                         : "border-gray-200"
                     }`}
                   >
                     <img
-                      src={image}
+                      src={`${(import.meta.env.VITE_API_URL || "http://localhost:5000/api").replace("/api", "")}${image}`}
                       alt={`${product.name} ${index + 1}`}
                       className="w-full h-full object-cover"
                     />
@@ -141,7 +141,7 @@ const ProductDetail = () => {
               </h1>
 
               <div className="flex items-center gap-3 mb-6">
-                <span className="text-3xl font-bold text-primary-600">
+                <span className="text-3xl font-bold text-black">
                   ${product.price}
                 </span>
                 {product.originalPrice && (
@@ -172,8 +172,8 @@ const ProductDetail = () => {
                       onClick={() => setSelectedSize(size)}
                       className={`py-2 px-4 border rounded-lg font-medium transition-all ${
                         selectedSize === size
-                          ? "border-primary-600 bg-primary-600 text-white"
-                          : "border-gray-300 hover:border-primary-600"
+                          ? "border-black bg-black text-white"
+                          : "border-gray-300 hover:border-black"
                       }`}
                     >
                       {size}
@@ -207,24 +207,32 @@ const ProductDetail = () => {
               </div>
 
               {/* Actions */}
-              <div className="flex gap-4 mb-8">
+              <div className="space-y-3 mb-8">
+                <div className="flex gap-3">
+                  <button
+                    onClick={handleOrderNow}
+                    className="flex-1 bg-black text-white py-3 px-6 rounded-lg font-semibold hover:bg-gray-800 transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
+                    disabled={!product.inStock}
+                  >
+                    <FiShoppingBag className="w-5 h-5" />
+                    {product.inStock ? "Order Now" : "Out of Stock"}
+                  </button>
+                  <button className="px-6 border-2 border-black text-black hover:bg-black hover:text-white rounded-lg transition-colors flex items-center justify-center">
+                    <FiHeart size={20} />
+                  </button>
+                </div>
                 <button
                   onClick={handleAddToCart}
-                  className="flex-1 btn-primary flex items-center justify-center gap-2"
+                  className="w-full border-2 border-black text-black py-3 px-6 rounded-lg font-semibold hover:bg-gray-100 transition-colors flex items-center justify-center gap-2"
                   disabled={!product.inStock}
                 >
-                  <FiShoppingCart />
-                  {product.inStock ? "Add to Cart" : "Out of Stock"}
-                </button>
-                <button className="px-6 border-2 border-primary-600 text-primary-600 hover:bg-primary-600 hover:text-white rounded-lg transition-colors flex items-center justify-center">
-                  <FiHeart size={20} />
+                  <FiShoppingCart className="w-5 h-5" />
+                  Add to Cart
                 </button>
               </div>
 
               {/* Features */}
-              <div className="space-y-4 pt-6 border-t border-gray-200">
-                
-              </div>
+              <div className="space-y-4 pt-6 border-t border-gray-200"></div>
 
               {/* Product Features */}
               {product.features && (
@@ -236,7 +244,7 @@ const ProductDetail = () => {
                         key={index}
                         className="flex items-center gap-2 text-gray-600"
                       >
-                        <span className="text-primary-600">✓</span>
+                        <span className="text-black">✓</span>
                         {feature}
                       </li>
                     ))}
@@ -247,6 +255,16 @@ const ProductDetail = () => {
           </div>
         </div>
       </div>
+
+      {/* Direct Order Modal */}
+      <DirectOrderModal
+        isOpen={showOrderModal}
+        onClose={() => setShowOrderModal(false)}
+        product={product}
+        quantity={quantity}
+        selectedSize={selectedSize}
+        selectedColor={product.colors?.[0]}
+      />
     </>
   );
 };

@@ -1,10 +1,10 @@
-# E-Shoe - Secure E-Commerce Platform
+# Flick - Secure E-Commerce Platform
 
 A modern, secure e-commerce platform for selling premium footwear online with OTP-based authentication.
 
 ## 🚀 Live Demo
 
-- **Frontend**: [Deployed on Vercel](https://e-shoe.vercel.app) _(will be available after deployment)_
+- **Frontend**: [Deployed on Vercel](https://flick.vercel.app) _(will be available after deployment)_
 
 ## ✨ Features
 
@@ -19,7 +19,7 @@ A modern, secure e-commerce platform for selling premium footwear online with OT
 ## Project Structure
 
 ```
-E-Shoe/
+Flick/
 ├── Frontend/           # React + Tailwind CSS frontend
 │   ├── src/
 │   │   ├── components/
@@ -174,7 +174,7 @@ This project follows industry-standard security practices:
 
 3. **Set Environment Variables in Vercel:**
    - `VITE_API_URL` - Your backend API URL (when ready)
-   - `VITE_APP_NAME` - E-Shoe
+   - `VITE_APP_NAME` - Flick
    - `VITE_APP_URL` - Your Vercel deployment URL
 
 4. **Deploy:**
@@ -202,8 +202,8 @@ The production build will be in the `dist/` folder.
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/KrishnenduBarua/E-Shoe.git
-   cd E-Shoe
+   git clone https://github.com/KrishnenduBarua/Flick.git
+   cd Flick
    ```
 
 2. **Install Frontend dependencies:**
@@ -245,12 +245,12 @@ Proprietary and confidential. All rights reserved.
 
 For support and inquiries:
 
-- Email: support@e-shoe.com
+- Email: support@flick.com
 - Phone: +1 (234) 567-890
 
 ## Contributors
 
-Development Team - E-Shoe
+Development Team - Flick
 
 ---
 

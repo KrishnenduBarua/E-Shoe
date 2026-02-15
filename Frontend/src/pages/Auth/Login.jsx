@@ -3,6 +3,8 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { FiPhone, FiKey } from "react-icons/fi";
 import useAuthStore from "../../store/authStore";
+import { api } from "../../utils/api";
+import Cookies from "js-cookie";
 import {
   sanitizeInput,
   validatePhone,
@@ -64,16 +66,16 @@ const Login = () => {
     setErrors({});
 
     try {
-      // Simulate API call - Replace with actual API
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      // In production, call: await api.auth.sendOTP(phoneNumber)
+      await api.auth.sendOTP(phoneNumber);
       console.log("OTP sent to:", phoneNumber);
 
       setStep(2);
       setResendTimer(60); // 60 seconds cooldown
     } catch (error) {
-      setErrors({ submit: "Failed to send OTP. Please try again." });
+      const errorMessage =
+        error.response?.data?.message ||
+        "Failed to send OTP. Please try again.";
+      setErrors({ submit: errorMessage });
     } finally {
       setLoading(false);
     }
@@ -96,22 +98,28 @@ const Login = () => {
     setErrors({});
 
     try {
-      // Simulate API call - Replace with actual API
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      const response = await api.auth.verifyOTP(phoneNumber, otp);
+      const userData = response.data.data.user;
+      const token = response.data.data.token;
 
-      // In production, call: await api.auth.verifyOTP(phoneNumber, otp)
-      const mockUser = {
-        id: 1,
-        name: "User",
-        phoneNumber: phoneNumber,
-        email: "",
+      // Store token in cookie
+      Cookies.set("auth_token", token, { expires: 7 });
+
+      // Store user data
+      const user = {
+        id: userData.id,
+        name: userData.name || "User",
+        phoneNumber: userData.phoneNumber,
+        email: userData.email || "",
       };
 
       console.log("OTP verified for:", phoneNumber);
-      setUser(mockUser);
+      setUser(user);
       navigate(from, { replace: true });
     } catch (error) {
-      setErrors({ otp: "Invalid OTP. Please try again." });
+      const errorMessage =
+        error.response?.data?.message || "Invalid OTP. Please try again.";
+      setErrors({ otp: errorMessage });
     } finally {
       setLoading(false);
     }
@@ -126,7 +134,7 @@ const Login = () => {
   return (
     <>
       <Helmet>
-        <title>Login - E-Shoe</title>
+        <title>Login - Flick</title>
       </Helmet>
 
       <div className="bg-gray-50 min-h-screen py-12">
@@ -165,12 +173,15 @@ const Login = () => {
                       value={phoneNumber}
                       onChange={handlePhoneChange}
                       className="input-field pl-10"
-                      placeholder="+1 (234) 567-8900"
+                      placeholder="01712345678 or +880 1712345678"
                       maxLength={20}
                       autoComplete="tel"
                       autoFocus
                     />
                   </div>
+                  <p className="text-xs text-gray-500 mt-1">
+                    🇧🇩 Enter your Bangladesh mobile number
+                  </p>
                   {errors.phoneNumber && (
                     <p className="text-red-600 text-sm mt-1">
                       {errors.phoneNumber}
@@ -253,7 +264,7 @@ const Login = () => {
                       type="button"
                       onClick={handleResendOTP}
                       disabled={loading}
-                      className="text-sm text-primary-600 hover:text-primary-700 font-semibold"
+                      className="text-sm text-black hover:text-gray-700 font-semibold"
                     >
                       Resend OTP
                     </button>
@@ -265,16 +276,13 @@ const Login = () => {
             <div className="mt-6 text-center">
               <p className="text-gray-600 text-sm">
                 By continuing, you agree to our{" "}
-                <Link
-                  to="/terms"
-                  className="text-primary-600 hover:text-primary-700"
-                >
+                <Link to="/terms" className="text-black hover:text-gray-700">
                   Terms
                 </Link>{" "}
                 and{" "}
                 <Link
                   to="/privacy-policy"
-                  className="text-primary-600 hover:text-primary-700"
+                  className="text-black hover:text-gray-700"
                 >
                   Privacy Policy
                 </Link>

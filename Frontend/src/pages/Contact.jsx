@@ -77,13 +77,14 @@ const Contact = () => {
   return (
     <>
       <Helmet>
-        <title>Contact Us - E-Shoe</title>
+        <title>Contact Us - Flick</title>
       </Helmet>
 
       <div className="bg-white">
         {/* Hero Section */}
-        <div className="bg-gradient-to-r from-primary-600 to-primary-800 text-white py-20">
-          <div className="container-custom text-center">
+        <div className="relative bg-black text-white py-20 overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-black via-gray-900 to-black opacity-90"></div>
+          <div className="container-custom text-center relative z-10">
             <h1 className="text-4xl md:text-5xl font-bold mb-4">Contact Us</h1>
             <p className="text-xl max-w-2xl mx-auto">
               We'd love to hear from you. Get in touch with us today!
@@ -96,43 +97,15 @@ const Contact = () => {
             {/* Contact Information */}
             <div className="lg:col-span-1 space-y-6">
               <div className="bg-gray-50 rounded-lg p-6">
-                <FiMapPin className="text-primary-600 mb-3" size={32} />
-                <h3 className="font-bold text-lg mb-2">Visit Us</h3>
-                <p className="text-gray-600">
-                  123 Fashion Street
-                  <br />
-                  New York, NY 10001
-                  <br />
-                  United States
-                </p>
-              </div>
-
-              <div className="bg-gray-50 rounded-lg p-6">
-                <FiPhone className="text-primary-600 mb-3" size={32} />
+                <FiPhone className="text-black mb-3" size={32} />
                 <h3 className="font-bold text-lg mb-2">Call Us</h3>
                 <p className="text-gray-600">
-                  <a href="tel:+1234567890" className="hover:text-primary-600">
-                    +1 (234) 567-890
+                  <a href="tel:+880 1841-793410" className="hover:text-black">
+                    +880 1841-793410
                   </a>
                 </p>
                 <p className="text-sm text-gray-500 mt-1">
                   Mon-Fri: 9:00 AM - 6:00 PM
-                </p>
-              </div>
-
-              <div className="bg-gray-50 rounded-lg p-6">
-                <FiMail className="text-primary-600 mb-3" size={32} />
-                <h3 className="font-bold text-lg mb-2">Email Us</h3>
-                <p className="text-gray-600">
-                  <a
-                    href="mailto:support@e-shoe.com"
-                    className="hover:text-primary-600"
-                  >
-                    support@e-shoe.com
-                  </a>
-                </p>
-                <p className="text-sm text-gray-500 mt-1">
-                  We'll respond within 24 hours
                 </p>
               </div>
             </div>

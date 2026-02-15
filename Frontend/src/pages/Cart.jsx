@@ -17,7 +17,7 @@ const Cart = () => {
     return (
       <>
         <Helmet>
-          <title>Shopping Cart - E-Shoe</title>
+          <title>Shopping Cart - Flick</title>
         </Helmet>
         <div className="container-custom py-16 text-center">
           <FiShoppingBag className="mx-auto text-gray-400 mb-4" size={64} />
@@ -38,7 +38,7 @@ const Cart = () => {
   return (
     <>
       <Helmet>
-        <title>Shopping Cart ({items.length}) - E-Shoe</title>
+        <title>{`Shopping Cart (${items.length || 0}) - Flick`}</title>
       </Helmet>
 
       <div className="bg-gray-50 min-h-screen py-8">
@@ -70,14 +70,14 @@ const Cart = () => {
                           Size: {item.selectedSize}
                         </p>
                       )}
-                      <p className="text-lg font-bold text-primary-600">
+                      <p className="text-lg font-bold text-black">
                         ${item.price}
                       </p>
                     </div>
 
                     <div className="flex flex-col items-end justify-between">
                       <button
-                        onClick={() => removeItem(item.id)}
+                        onClick={() => removeItem(item.id, item.selectedSize)}
                         className="text-red-500 hover:text-red-700 transition-colors"
                         title="Remove item"
                       >
@@ -87,7 +87,11 @@ const Cart = () => {
                       <div className="flex items-center gap-2 border border-gray-300 rounded-lg">
                         <button
                           onClick={() =>
-                            updateQuantity(item.id, item.quantity - 1)
+                            updateQuantity(
+                              item.id,
+                              item.selectedSize,
+                              item.quantity - 1,
+                            )
                           }
                           className="px-3 py-1 hover:bg-gray-100"
                         >
@@ -98,7 +102,11 @@ const Cart = () => {
                         </span>
                         <button
                           onClick={() =>
-                            updateQuantity(item.id, item.quantity + 1)
+                            updateQuantity(
+                              item.id,
+                              item.selectedSize,
+                              item.quantity + 1,
+                            )
                           }
                           className="px-3 py-1 hover:bg-gray-100"
                         >
@@ -143,7 +151,7 @@ const Cart = () => {
                     </span>
                   </div>
                   {shipping > 0 && (
-                    <p className="text-sm text-primary-600">
+                    <p className="text-sm text-black">
                       Add ${(50 - subtotal).toFixed(2)} more for free shipping!
                     </p>
                   )}
@@ -153,9 +161,7 @@ const Cart = () => {
                   </div>
                   <div className="border-t pt-3 flex justify-between text-lg font-bold text-gray-900">
                     <span>Total</span>
-                    <span className="text-primary-600">
-                      ${total.toFixed(2)}
-                    </span>
+                    <span className="text-black">${total.toFixed(2)}</span>
                   </div>
                 </div>
 

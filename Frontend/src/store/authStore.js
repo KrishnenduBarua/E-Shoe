@@ -1,6 +1,7 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { persist, createJSONStorage } from "zustand/middleware";
 import Cookies from "js-cookie";
+import { api } from "../utils/api";
 
 const useAuthStore = create(
   persist(
@@ -10,10 +11,16 @@ const useAuthStore = create(
 
       setUser: (user) => set({ user, isAuthenticated: !!user }),
 
-      logout: () => {
-        Cookies.remove("auth_token");
-        Cookies.remove("user_data");
-        set({ user: null, isAuthenticated: false });
+      logout: async () => {
+        try {
+          await api.auth.logout();
+        } catch (error) {
+          console.error("Logout error:", error);
+        } finally {
+          Cookies.remove("auth_token");
+          Cookies.remove("user_data");
+          set({ user: null, isAuthenticated: false });
+        }
       },
 
       updateUser: (userData) =>
@@ -23,7 +30,7 @@ const useAuthStore = create(
     }),
     {
       name: "auth-storage",
-      getStorage: () => sessionStorage, // Use sessionStorage for security
+      storage: createJSONStorage(() => sessionStorage), // Use sessionStorage for security
     },
   ),
 );

@@ -2,12 +2,15 @@
 node_modules/
 Frontend/node_modules/
 Backend/node_modules/
+AdminPage/node_modules/
 
 # Build outputs
 Frontend/dist/
 Frontend/dist-ssr/
 Backend/dist/
 Backend/build/
+AdminPage/dist/
+AdminPage/dist-ssr/
 
 # Environment variables
 .env
@@ -16,8 +19,28 @@ Backend/build/
 .env.development
 Frontend/.env
 Frontend/.env.local
+Frontend/.env.production
 Backend/.env
 Backend/.env.local
+Backend/.env.production
+AdminPage/.env
+AdminPage/.env.local
+AdminPage/.env.production
+
+# Production credentials (NEVER COMMIT!)
+PRODUCTION-CREDENTIALS.md
+
+# Deployment guide files (local guidance only)
+DEPLOYMENT.md
+DEPLOYMENT-CHECKLIST.md
+DEPLOYMENT-SUMMARY.md
+DEV-VS-PROD.md
+DEPLOY-NOW.md
+START-HERE.md
+DIRECTORY-GUIDE.md
+
+# Uploads (local development only, production uses Cloudinary)
+Backend/uploads/
 
 # Logs
 logs
