@@ -49,6 +49,12 @@ app.use(
       // Allow requests with no origin (like mobile apps or curl requests)
       if (!origin) return callback(null, true);
 
+      // Allow all Vercel preview and production deployments (*.vercel.app)
+      if (origin.endsWith('.vercel.app')) {
+        return callback(null, true);
+      }
+
+      // Allow explicitly configured origins or development mode
       if (
         allowedOrigins.indexOf(origin) !== -1 ||
         process.env.NODE_ENV === "development"
