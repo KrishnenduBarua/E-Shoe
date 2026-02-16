@@ -71,8 +71,19 @@ export const createProduct = async (req, res, next) => {
         ? colors.split(",").map((c) => c.trim())
         : colors || [];
 
-    // Generate slug if not provided
-    const productSlug = slug || name.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+    // Generate unique slug
+    let productSlug = slug || name.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+    
+    // Check if slug exists and make it unique
+    const [existingProducts] = await pool.query(
+      "SELECT id FROM products WHERE slug = ?",
+      [productSlug]
+    );
+    
+    if (existingProducts.length > 0) {
+      // Append timestamp to make it unique
+      productSlug = `${productSlug}-${Date.now()}`;
+    }
 
     // Insert product
     const [result] = await pool.query(
