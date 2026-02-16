@@ -3,12 +3,14 @@ import Cookies from "js-cookie";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
-// Helper function to get image URL
+// Helper function to get image URL (v2 - with malformed URL fix)
 export const getImageUrl = (imagePath) => {
   if (!imagePath) return "";
 
   // Convert to string and trim any whitespace
   const path = String(imagePath).trim();
+  
+  console.log('[getImageUrl] Input:', path); // Debug log
 
   // Check for cloudinary.com first (regardless of protocol)
   if (path.includes("cloudinary.com") || path.includes("res.cloudinary")) {
@@ -23,6 +25,7 @@ export const getImageUrl = (imagePath) => {
       fixedUrl = `https://${fixedUrl}`;
     }
 
+    console.log('[getImageUrl] Fixed Cloudinary URL:', fixedUrl); // Debug log
     return fixedUrl;
   }
 

@@ -1,5 +1,5 @@
 /**
- * Helper function to get correct image URL
+ * Helper function to get correct image URL (v2 - with malformed URL fix)
  * Handles both Cloudinary URLs (absolute) and local storage paths (relative)
  */
 export const getImageUrl = (imagePath) => {
@@ -7,6 +7,8 @@ export const getImageUrl = (imagePath) => {
 
   // Convert to string and trim any whitespace
   const path = String(imagePath).trim();
+
+  console.log('[getImageUrl] Input:', path); // Debug log
 
   // Check for cloudinary.com first (regardless of protocol)
   if (path.includes("cloudinary.com") || path.includes("res.cloudinary")) {
@@ -21,6 +23,7 @@ export const getImageUrl = (imagePath) => {
       fixedUrl = `https://${fixedUrl}`;
     }
 
+    console.log('[getImageUrl] Fixed Cloudinary URL:', fixedUrl); // Debug log
     return fixedUrl;
   }
 
