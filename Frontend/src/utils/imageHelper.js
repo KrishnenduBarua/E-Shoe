@@ -7,20 +7,20 @@ export const getImageUrl = (imagePath) => {
 
   // Convert to string and trim any whitespace
   const path = String(imagePath).trim();
-  
+
   // Check for cloudinary.com first (regardless of protocol)
   if (path.includes("cloudinary.com") || path.includes("res.cloudinary")) {
     // Fix malformed protocols
     let fixedUrl = path
-      .replace(/^https\/\//, "https://")  // Fix https//
-      .replace(/^http\/\//, "http://")    // Fix http//
-      .replace(/^\/\//, "https://");     // Fix //
-    
+      .replace(/^https\/\//, "https://") // Fix https//
+      .replace(/^http\/\//, "http://") // Fix http//
+      .replace(/^\/\//, "https://"); // Fix //
+
     // If still no protocol, add https://
     if (!fixedUrl.match(/^https?:\/\//)) {
       fixedUrl = `https://${fixedUrl}`;
     }
-    
+
     return fixedUrl;
   }
 

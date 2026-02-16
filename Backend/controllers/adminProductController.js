@@ -4,25 +4,25 @@ import { deleteUploadedFiles, getImageUrl } from "../middleware/cloudinary.js";
 // Helper function to fix malformed Cloudinary URLs
 const fixImageUrl = (url) => {
   if (!url) return url;
-  
+
   const urlStr = String(url).trim();
-  
+
   // Check if it's a Cloudinary URL
-  if (urlStr.includes('cloudinary.com') || urlStr.includes('res.cloudinary')) {
+  if (urlStr.includes("cloudinary.com") || urlStr.includes("res.cloudinary")) {
     // Fix malformed protocols
     let fixed = urlStr
-      .replace(/^https\/\//, 'https://')
-      .replace(/^http\/\//, 'http://')
-      .replace(/^\/\//, 'https://');
-    
+      .replace(/^https\/\//, "https://")
+      .replace(/^http\/\//, "http://")
+      .replace(/^\/\//, "https://");
+
     // Ensure it has a protocol
     if (!fixed.match(/^https?:\/\//)) {
       fixed = `https://${fixed}`;
     }
-    
+
     return fixed;
   }
-  
+
   return urlStr;
 };
 

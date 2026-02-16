@@ -96,9 +96,9 @@ export const getImageUrl = (file) => {
 
     // Fix malformed protocols using regex
     url = url
-      .replace(/^https\/\//, "https://")  // Fix https//
-      .replace(/^http\/\//, "http://")    // Fix http//
-      .replace(/^\/\//, "https://");      // Fix //
+      .replace(/^https\/\//, "https://") // Fix https//
+      .replace(/^http\/\//, "http://") // Fix http//
+      .replace(/^\/\//, "https://"); // Fix //
 
     // Ensure URL has protocol if it doesn't already
     if (!url.match(/^https?:\/\//)) {
