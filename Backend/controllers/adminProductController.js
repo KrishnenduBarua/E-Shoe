@@ -73,13 +73,13 @@ export const createProduct = async (req, res, next) => {
 
     // Generate unique slug
     let productSlug = slug || name.toLowerCase().replace(/[^a-z0-9]+/g, "-");
-    
+
     // Check if slug exists and make it unique
     const [existingProducts] = await pool.query(
       "SELECT id FROM products WHERE slug = ?",
-      [productSlug]
+      [productSlug],
     );
-    
+
     if (existingProducts.length > 0) {
       // Append timestamp to make it unique
       productSlug = `${productSlug}-${Date.now()}`;
