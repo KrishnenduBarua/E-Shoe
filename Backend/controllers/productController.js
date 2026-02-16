@@ -1,5 +1,30 @@
 import { pool } from "../config/database.js";
 
+// Helper function to fix malformed Cloudinary URLs
+const fixImageUrl = (url) => {
+  if (!url) return url;
+  
+  const urlStr = String(url).trim();
+  
+  // Check if it's a Cloudinary URL
+  if (urlStr.includes('cloudinary.com') || urlStr.includes('res.cloudinary')) {
+    // Fix malformed protocols
+    let fixed = urlStr
+      .replace(/^https\/\//, 'https://')
+      .replace(/^http\/\//, 'http://')
+      .replace(/^\/\//, 'https://');
+    
+    // Ensure it has a protocol
+    if (!fixed.match(/^https?:\/\//)) {
+      fixed = `https://${fixed}`;
+    }
+    
+    return fixed;
+  }
+  
+  return urlStr;
+};
+
 // @desc    Get all products with filters
 // @route   GET /api/products
 // @access  Public
@@ -75,6 +100,12 @@ export const getAllProductsController = async (req, res, next) => {
       }
       if (product.additional_images) {
         product.images = JSON.parse(product.additional_images);
+        // Fix malformed URLs in images array
+        product.images = product.images.map(fixImageUrl);
+      }
+      // Fix main image URL
+      if (product.image_url) {
+        product.image_url = fixImageUrl(product.image_url);
       }
       // Set main image if not already set
       if (!product.image && product.image_url) {
@@ -152,6 +183,12 @@ export const getProductByIdController = async (req, res, next) => {
     }
     if (product.additional_images) {
       product.images = JSON.parse(product.additional_images);
+      // Fix malformed URLs in images array
+      product.images = product.images.map(fixImageUrl);
+    }
+    // Fix main image URL
+    if (product.image_url) {
+      product.image_url = fixImageUrl(product.image_url);
     }
     // Set main image if not already set
     if (!product.image && product.image_url) {
@@ -204,6 +241,12 @@ export const searchProductsController = async (req, res, next) => {
       }
       if (product.additional_images) {
         product.images = JSON.parse(product.additional_images);
+        // Fix malformed URLs in images array
+        product.images = product.images.map(fixImageUrl);
+      }
+      // Fix main image URL
+      if (product.image_url) {
+        product.image_url = fixImageUrl(product.image_url);
       }
       // Set main image if not already set
       if (!product.image && product.image_url) {

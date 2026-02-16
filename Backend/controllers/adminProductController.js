@@ -1,6 +1,31 @@
 import { pool } from "../config/database.js";
 import { deleteUploadedFiles, getImageUrl } from "../middleware/cloudinary.js";
 
+// Helper function to fix malformed Cloudinary URLs
+const fixImageUrl = (url) => {
+  if (!url) return url;
+  
+  const urlStr = String(url).trim();
+  
+  // Check if it's a Cloudinary URL
+  if (urlStr.includes('cloudinary.com') || urlStr.includes('res.cloudinary')) {
+    // Fix malformed protocols
+    let fixed = urlStr
+      .replace(/^https\/\//, 'https://')
+      .replace(/^http\/\//, 'http://')
+      .replace(/^\/\//, 'https://');
+    
+    // Ensure it has a protocol
+    if (!fixed.match(/^https?:\/\//)) {
+      fixed = `https://${fixed}`;
+    }
+    
+    return fixed;
+  }
+  
+  return urlStr;
+};
+
 // @desc    Create new product
 // @route   POST /api/admin/products
 // @access  Private (Admin)
@@ -253,6 +278,12 @@ export const getProductById = async (req, res, next) => {
     }
     if (product.additional_images) {
       product.images = JSON.parse(product.additional_images);
+      // Fix malformed URLs in images array
+      product.images = product.images.map(fixImageUrl);
+    }
+    // Fix main image URL
+    if (product.image_url) {
+      product.image_url = fixImageUrl(product.image_url);
     }
 
     res.json({
@@ -345,6 +376,12 @@ export const getAllProducts = async (req, res, next) => {
       }
       if (product.additional_images) {
         product.images = JSON.parse(product.additional_images);
+        // Fix malformed URLs in images array
+        product.images = product.images.map(fixImageUrl);
+      }
+      // Fix main image URL
+      if (product.image_url) {
+        product.image_url = fixImageUrl(product.image_url);
       }
     });
 
