@@ -77,8 +77,8 @@ export const createDirectOrderController = async (req, res, next) => {
 
     // Calculate pricing
     const subtotal = product.price * quantity;
-    const shippingCost = subtotal >= 50 ? 0 : 10;
-    const tax = subtotal * 0.08;
+    const shippingCost = 120;
+    const tax = 0;
     const total = subtotal + shippingCost + tax;
 
     // Generate order number
@@ -260,8 +260,8 @@ export const createOrderController = async (req, res, next) => {
     }
 
     // Calculate shipping and tax
-    const shippingCost = subtotal >= 50 ? 0 : 10;
-    const tax = subtotal * 0.08;
+    const shippingCost = 120;
+    const tax = 0;
     const total = subtotal + shippingCost + tax;
 
     // Generate order number

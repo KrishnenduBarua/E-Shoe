@@ -9,8 +9,8 @@ const Cart = () => {
     useCartStore();
 
   const subtotal = getTotal();
-  const shipping = subtotal > 50 ? 0 : 10;
-  const tax = subtotal * 0.08;
+  const shipping = 120;
+  const tax = 0;
   const total = subtotal + shipping + tax;
 
   if (items.length === 0) {
@@ -147,17 +147,8 @@ const Cart = () => {
                   <div className="flex justify-between text-gray-600">
                     <span>Shipping</span>
                     <span className="font-semibold">
-                      {shipping === 0 ? "FREE" : `$${shipping.toFixed(2)}`}
+                      ${shipping.toFixed(2)}
                     </span>
-                  </div>
-                  {shipping > 0 && (
-                    <p className="text-sm text-black">
-                      Add ${(50 - subtotal).toFixed(2)} more for free shipping!
-                    </p>
-                  )}
-                  <div className="flex justify-between text-gray-600">
-                    <span>Tax (8%)</span>
-                    <span className="font-semibold">${tax.toFixed(2)}</span>
                   </div>
                   <div className="border-t pt-3 flex justify-between text-lg font-bold text-gray-900">
                     <span>Total</span>
@@ -190,7 +181,7 @@ const Cart = () => {
                   </div>
                   <div className="flex items-center gap-2 text-sm text-gray-600">
                     <span className="text-green-600">✓</span>
-                    <span>Free shipping over $50</span>
+                    <span>Flat shipping rate $120</span>
                   </div>
                 </div>
               </div>
