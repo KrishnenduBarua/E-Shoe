@@ -278,6 +278,14 @@ export default function OrderDetail() {
               <strong>Address:</strong>
               <span>{order.shipping_address}</span>
             </div>
+            <div className="info-item">
+              <strong>City:</strong>
+              <span>{order.shipping_city}</span>
+            </div>
+            <div className="info-item">
+              <strong>State/District:</strong>
+              <span>{order.shipping_state}</span>
+            </div>
           </div>
         </div>
 
@@ -294,7 +302,7 @@ export default function OrderDetail() {
             <div className="info-item">
               <strong>Total Amount:</strong>
               <span className="text-lg text-bold">
-                ৳{order.total?.toLocaleString()}
+                ৳{order.total_amount?.toLocaleString()}
               </span>
             </div>
             {order.confirmed_by && (
@@ -355,7 +363,7 @@ export default function OrderDetail() {
                     <strong>Total:</strong>
                   </td>
                   <td>
-                    <strong>৳{order.total?.toLocaleString()}</strong>
+                    <strong>৳{order.total_amount?.toLocaleString()}</strong>
                   </td>
                 </tr>
               </tfoot>
