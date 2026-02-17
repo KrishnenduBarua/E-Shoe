@@ -19,13 +19,10 @@ const Checkout = () => {
     phone: "",
 
     // Shipping Address
-    firstName: "",
-    lastName: "",
+    name: "",
     address: "",
-    apartment: "",
     city: "",
     state: "",
-    country: "Bangladesh",
 
     // Payment Method
     paymentMethod: "COD",
@@ -76,8 +73,7 @@ const Checkout = () => {
 
     // Required fields
     const requiredFields = [
-      "firstName",
-      "lastName",
+      "name",
       "address",
       "city",
       "state",
@@ -88,6 +84,11 @@ const Checkout = () => {
           `${field.charAt(0).toUpperCase() + field.slice(1)} is required`;
       }
     });
+
+    // Name validation
+    if (formData.name && formData.name.length < 3) {
+      newErrors.name = "Full name must be at least 3 characters";
+    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -112,13 +113,12 @@ const Checkout = () => {
           selectedColor: item.selectedColor || null,
         })),
         shippingInfo: {
-          name: `${formData.firstName} ${formData.lastName}`,
+          name: formData.name,
           phone: formData.phone,
           email: formData.email,
-          address: `${formData.address}${formData.apartment ? ", " + formData.apartment : ""}`,
+          address: formData.address,
           city: formData.city,
           state: formData.state,
-          country: formData.country,
         },
         paymentMethod: formData.paymentMethod,
         isGuest: !user, // Flag for guest checkout
@@ -246,41 +246,24 @@ const Checkout = () => {
                     Shipping Address
                   </h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
+                    <div className="md:col-span-2">
                       <label className="block text-sm font-semibold text-gray-900 mb-1">
-                        First Name *
+                        Full Name *
                       </label>
                       <input
                         type="text"
-                        name="firstName"
-                        value={formData.firstName}
+                        name="name"
+                        value={formData.name}
                         onChange={handleInputChange}
+                        placeholder="Enter your full name"
                         className="input-field"
                         required
-                        maxLength={50}
+                        minLength={3}
+                        maxLength={100}
                       />
-                      {errors.firstName && (
+                      {errors.name && (
                         <p className="text-red-600 text-sm mt-1">
-                          {errors.firstName}
-                        </p>
-                      )}
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-900 mb-1">
-                        Last Name *
-                      </label>
-                      <input
-                        type="text"
-                        name="lastName"
-                        value={formData.lastName}
-                        onChange={handleInputChange}
-                        className="input-field"
-                        required
-                        maxLength={50}
-                      />
-                      {errors.lastName && (
-                        <p className="text-red-600 text-sm mt-1">
-                          {errors.lastName}
+                          {errors.name}
                         </p>
                       )}
                     </div>
@@ -302,19 +285,6 @@ const Checkout = () => {
                           {errors.address}
                         </p>
                       )}
-                    </div>
-                    <div className="md:col-span-2">
-                      <label className="block text-sm font-semibold text-gray-900 mb-1">
-                        Apartment, suite, etc. (optional)
-                      </label>
-                      <input
-                        type="text"
-                        name="apartment"
-                        value={formData.apartment}
-                        onChange={handleInputChange}
-                        className="input-field"
-                        maxLength={50}
-                      />
                     </div>
                     <div>
                       <label className="block text-sm font-semibold text-gray-900 mb-1">
@@ -354,20 +324,6 @@ const Checkout = () => {
                         </p>
                       )}
                     </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-900 mb-1">
-                        Country *
-                      </label>
-                      <input
-                        type="text"
-                        name="country"
-                        value={formData.country}
-                        onChange={handleInputChange}
-                        className="input-field"
-                        required
-                        maxLength={50}
-                      />
-                    </div>
                   </div>
                 </div>
 
@@ -380,7 +336,10 @@ const Checkout = () => {
                     <button
                       type="button"
                       onClick={() =>
-                        setFormData((prev) => ({ ...prev, paymentMethod: "COD" }))
+                        setFormData((prev) => ({
+                          ...prev,
+                          paymentMethod: "COD",
+                        }))
                       }
                       className={`p-4 border-2 rounded-lg text-center transition-all ${
                         formData.paymentMethod === "COD"
@@ -396,7 +355,10 @@ const Checkout = () => {
                     <button
                       type="button"
                       onClick={() =>
-                        setFormData((prev) => ({ ...prev, paymentMethod: "Bkash" }))
+                        setFormData((prev) => ({
+                          ...prev,
+                          paymentMethod: "Bkash",
+                        }))
                       }
                       className={`p-4 border-2 rounded-lg text-center transition-all ${
                         formData.paymentMethod === "Bkash"
@@ -405,7 +367,9 @@ const Checkout = () => {
                       }`}
                     >
                       <div className="font-semibold">Bkash Payment</div>
-                      <div className="text-xs text-gray-600 mt-1">Pay online</div>
+                      <div className="text-xs text-gray-600 mt-1">
+                        Pay online
+                      </div>
                     </button>
                   </div>
 
