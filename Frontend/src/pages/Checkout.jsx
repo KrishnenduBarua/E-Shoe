@@ -408,6 +408,34 @@ const Checkout = () => {
                       <div className="text-xs text-gray-600 mt-1">Pay online</div>
                     </button>
                   </div>
+
+                  {/* Bkash Payment Info - Show when Bkash is selected */}
+                  {formData.paymentMethod === "Bkash" && (
+                    <div className="mt-4 bg-pink-50 border border-pink-200 rounded-lg p-4">
+                      <div className="flex items-center gap-3">
+                        <div className="flex items-center justify-center w-16 h-16 bg-white rounded-lg shrink-0 border-2 border-pink-600">
+                          <img
+                            src="https://seeklogo.com/images/B/bkash-logo-835789094F-seeklogo.com.png"
+                            alt="Bkash Logo"
+                            className="w-14 h-14 object-contain"
+                            onError={(e) => {
+                              e.target.onerror = null;
+                              e.target.src =
+                                "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 80'%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-size='32' font-weight='bold' fill='%23E2136E'%3EbKash%3C/text%3E%3C/svg%3E";
+                            }}
+                          />
+                        </div>
+                        <div>
+                          <div className="text-sm text-gray-600">
+                            Send payment to this number
+                          </div>
+                          <div className="text-lg font-bold text-pink-600">
+                            01841-793410
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
 
