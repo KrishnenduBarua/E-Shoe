@@ -142,7 +142,7 @@ export default function Dashboard() {
                       <tr key={order.id}>
                         <td>#{order.order_number}</td>
                         <td>{order.customer_name || order.shipping_name}</td>
-                        <td>৳{order.total?.toLocaleString()}</td>
+                        <td>৳{order.total_amount?.toLocaleString()}</td>
                         <td>
                           <span
                             className={`badge badge-${

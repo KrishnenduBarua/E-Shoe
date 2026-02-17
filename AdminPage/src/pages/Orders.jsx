@@ -189,7 +189,7 @@ export default function Orders() {
                             {order.guest_phone || order.user_phone}
                           </a>
                         </td>
-                        <td>৳{order.total?.toLocaleString()}</td>
+                        <td>৳{order.total_amount?.toLocaleString()}</td>
                         <td>
                           <span
                             className={`badge ${getStatusBadge(order.order_status)}`}
