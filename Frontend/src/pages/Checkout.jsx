@@ -25,15 +25,10 @@ const Checkout = () => {
     apartment: "",
     city: "",
     state: "",
-    zipCode: "",
-    country: "United States",
+    country: "Bangladesh",
 
     // Payment Method
-    paymentMethod: "card",
-    cardNumber: "",
-    cardName: "",
-    expiryDate: "",
-    cvv: "",
+    paymentMethod: "COD",
 
     // Additional
     saveInfo: false,
@@ -86,7 +81,6 @@ const Checkout = () => {
       "address",
       "city",
       "state",
-      "zipCode",
     ];
     requiredFields.forEach((field) => {
       if (!formData[field]) {
@@ -94,22 +88,6 @@ const Checkout = () => {
           `${field.charAt(0).toUpperCase() + field.slice(1)} is required`;
       }
     });
-
-    // Payment validation
-    if (formData.paymentMethod === "card") {
-      if (!formData.cardNumber || formData.cardNumber.length < 16) {
-        newErrors.cardNumber = "Invalid card number";
-      }
-      if (!formData.cardName) {
-        newErrors.cardName = "Cardholder name is required";
-      }
-      if (!formData.expiryDate) {
-        newErrors.expiryDate = "Expiry date is required";
-      }
-      if (!formData.cvv || formData.cvv.length < 3) {
-        newErrors.cvv = "Invalid CVV";
-      }
-    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -140,10 +118,9 @@ const Checkout = () => {
           address: `${formData.address}${formData.apartment ? ", " + formData.apartment : ""}`,
           city: formData.city,
           state: formData.state,
-          zip: formData.zipCode,
           country: formData.country,
         },
-        paymentMethod: formData.paymentMethod === "card" ? "Card" : "COD",
+        paymentMethod: formData.paymentMethod,
         isGuest: !user, // Flag for guest checkout
       };
 
@@ -379,25 +356,6 @@ const Checkout = () => {
                     </div>
                     <div>
                       <label className="block text-sm font-semibold text-gray-900 mb-1">
-                        ZIP Code *
-                      </label>
-                      <input
-                        type="text"
-                        name="zipCode"
-                        value={formData.zipCode}
-                        onChange={handleInputChange}
-                        className="input-field"
-                        required
-                        maxLength={10}
-                      />
-                      {errors.zipCode && (
-                        <p className="text-red-600 text-sm mt-1">
-                          {errors.zipCode}
-                        </p>
-                      )}
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-900 mb-1">
                         Country *
                       </label>
                       <input
@@ -418,113 +376,37 @@ const Checkout = () => {
                   <h2 className="text-xl font-bold text-gray-900 mb-4">
                     Payment Method
                   </h2>
-                  <div className="space-y-4">
-                    <div className="flex items-center gap-4 mb-4">
-                      <label className="flex items-center gap-2 cursor-pointer">
-                        <input
-                          type="radio"
-                          name="paymentMethod"
-                          value="card"
-                          checked={formData.paymentMethod === "card"}
-                          onChange={handleInputChange}
-                          className="w-4 h-4"
-                        />
-                        <span>Credit/Debit Card</span>
-                      </label>
-                      <label className="flex items-center gap-2 cursor-pointer">
-                        <input
-                          type="radio"
-                          name="paymentMethod"
-                          value="cod"
-                          checked={formData.paymentMethod === "cod"}
-                          onChange={handleInputChange}
-                          className="w-4 h-4"
-                        />
-                        <span>Cash on Delivery</span>
-                      </label>
-                    </div>
-
-                    {formData.paymentMethod === "card" && (
-                      <div className="space-y-4">
-                        <div>
-                          <label className="block text-sm font-semibold text-gray-900 mb-1">
-                            Card Number *
-                          </label>
-                          <input
-                            type="text"
-                            name="cardNumber"
-                            value={formData.cardNumber}
-                            onChange={handleInputChange}
-                            placeholder="1234 5678 9012 3456"
-                            className="input-field"
-                            maxLength={19}
-                          />
-                          {errors.cardNumber && (
-                            <p className="text-red-600 text-sm mt-1">
-                              {errors.cardNumber}
-                            </p>
-                          )}
-                        </div>
-                        <div>
-                          <label className="block text-sm font-semibold text-gray-900 mb-1">
-                            Cardholder Name *
-                          </label>
-                          <input
-                            type="text"
-                            name="cardName"
-                            value={formData.cardName}
-                            onChange={handleInputChange}
-                            className="input-field"
-                            maxLength={50}
-                          />
-                          {errors.cardName && (
-                            <p className="text-red-600 text-sm mt-1">
-                              {errors.cardName}
-                            </p>
-                          )}
-                        </div>
-                        <div className="grid grid-cols-2 gap-4">
-                          <div>
-                            <label className="block text-sm font-semibold text-gray-900 mb-1">
-                              Expiry Date *
-                            </label>
-                            <input
-                              type="text"
-                              name="expiryDate"
-                              value={formData.expiryDate}
-                              onChange={handleInputChange}
-                              placeholder="MM/YY"
-                              className="input-field"
-                              maxLength={5}
-                            />
-                            {errors.expiryDate && (
-                              <p className="text-red-600 text-sm mt-1">
-                                {errors.expiryDate}
-                              </p>
-                            )}
-                          </div>
-                          <div>
-                            <label className="block text-sm font-semibold text-gray-900 mb-1">
-                              CVV *
-                            </label>
-                            <input
-                              type="text"
-                              name="cvv"
-                              value={formData.cvv}
-                              onChange={handleInputChange}
-                              placeholder="123"
-                              className="input-field"
-                              maxLength={4}
-                            />
-                            {errors.cvv && (
-                              <p className="text-red-600 text-sm mt-1">
-                                {errors.cvv}
-                              </p>
-                            )}
-                          </div>
-                        </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setFormData((prev) => ({ ...prev, paymentMethod: "COD" }))
+                      }
+                      className={`p-4 border-2 rounded-lg text-center transition-all ${
+                        formData.paymentMethod === "COD"
+                          ? "border-black bg-gray-100 text-black"
+                          : "border-gray-200 hover:border-gray-300"
+                      }`}
+                    >
+                      <div className="font-semibold">Cash on Delivery</div>
+                      <div className="text-xs text-gray-600 mt-1">
+                        Pay when you receive
                       </div>
-                    )}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setFormData((prev) => ({ ...prev, paymentMethod: "Bkash" }))
+                      }
+                      className={`p-4 border-2 rounded-lg text-center transition-all ${
+                        formData.paymentMethod === "Bkash"
+                          ? "border-black bg-gray-100 text-black"
+                          : "border-gray-200 hover:border-gray-300"
+                      }`}
+                    >
+                      <div className="font-semibold">Bkash Payment</div>
+                      <div className="text-xs text-gray-600 mt-1">Pay online</div>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -568,9 +450,7 @@ const Checkout = () => {
                     </div>
                     <div className="flex justify-between text-gray-600">
                       <span>Shipping</span>
-                      <span>
-                        ${shipping.toFixed(2)}
-                      </span>
+                      <span>${shipping.toFixed(2)}</span>
                     </div>
                     <div className="border-t pt-2 flex justify-between text-lg font-bold text-gray-900">
                       <span>Total</span>
