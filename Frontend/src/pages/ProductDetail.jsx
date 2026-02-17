@@ -13,6 +13,7 @@ import {
 } from "react-icons/fi";
 import useCartStore from "../store/cartStore";
 import Loading from "../components/Common/Loading";
+import { getImageUrl } from "../utils/imageHelper";
 import DirectOrderModal from "../components/Product/DirectOrderModal";
 import { api } from "../utils/api";
 import { transformProduct } from "../utils/transformers";

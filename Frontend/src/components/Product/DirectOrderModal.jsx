@@ -5,6 +5,7 @@ import {
   validateEmail,
   validatePhone,
 } from "../../utils/security";
+import { getImageUrl } from "../../utils/imageHelper";
 
 const DirectOrderModal = ({
   isOpen,
