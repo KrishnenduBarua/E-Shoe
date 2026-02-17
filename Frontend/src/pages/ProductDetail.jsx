@@ -145,7 +145,7 @@ const ProductDetail = () => {
                 <span className="text-3xl font-bold text-black">
                   ${product.price}
                 </span>
-                {product.originalPrice && (
+                {product.originalPrice && discount > 0 && (
                   <>
                     <span className="text-xl text-gray-500 line-through">
                       ${product.originalPrice}
