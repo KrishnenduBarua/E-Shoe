@@ -296,6 +296,8 @@ export const getProductById = async (req, res, next) => {
     if (product.image_url) {
       product.image_url = fixImageUrl(product.image_url);
     }
+    // Map stock_quantity to stock for frontend compatibility
+    product.stock = product.stock_quantity;
 
     res.json({
       success: true,
@@ -394,6 +396,8 @@ export const getAllProducts = async (req, res, next) => {
       if (product.image_url) {
         product.image_url = fixImageUrl(product.image_url);
       }
+      // Map stock_quantity to stock for frontend compatibility
+      product.stock = product.stock_quantity;
     });
 
     // Get total count
