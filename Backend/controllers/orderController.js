@@ -34,7 +34,7 @@ export const createDirectOrderController = async (req, res, next) => {
     }
 
     // Validate shipping info
-    const requiredFields = ["name", "phone", "address", "city", "state", "zip"];
+    const requiredFields = ["name", "phone", "address", "city", "state"];
     for (const field of requiredFields) {
       if (!shippingInfo[field]) {
         return res.status(400).json({
@@ -90,9 +90,9 @@ export const createDirectOrderController = async (req, res, next) => {
         user_id, guest_name, guest_phone, guest_email,
         order_number, status, order_status, subtotal, shipping_cost, tax, total,
         shipping_name, shipping_phone, shipping_email, shipping_address, 
-        shipping_city, shipping_state, shipping_zip, shipping_country,
+        shipping_city, shipping_state, shipping_country,
         payment_method, notes
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         userId,
         userId ? null : shippingInfo.name,
@@ -111,7 +111,6 @@ export const createDirectOrderController = async (req, res, next) => {
         shippingInfo.address,
         shippingInfo.city,
         shippingInfo.state,
-        shippingInfo.zip,
         shippingInfo.country || "Bangladesh",
         paymentMethod,
         notes,
@@ -195,7 +194,7 @@ export const createOrderController = async (req, res, next) => {
     }
 
     // Validate shipping info
-    const requiredFields = ["name", "phone", "address", "city", "state", "zip"];
+    const requiredFields = ["name", "phone", "address", "city", "state"];
     for (const field of requiredFields) {
       if (!shippingInfo[field]) {
         return res.status(400).json({
@@ -273,9 +272,9 @@ export const createOrderController = async (req, res, next) => {
         user_id, guest_name, guest_phone, guest_email,
         order_number, status, order_status, subtotal, shipping_cost, tax, total,
         shipping_name, shipping_phone, shipping_email, shipping_address, 
-        shipping_city, shipping_state, shipping_zip, shipping_country,
+        shipping_city, shipping_state, shipping_country,
         payment_method, notes
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         userId,
         guestName,
@@ -294,7 +293,6 @@ export const createOrderController = async (req, res, next) => {
         shippingInfo.address,
         shippingInfo.city,
         shippingInfo.state,
-        shippingInfo.zip,
         shippingInfo.country || "Bangladesh",
         paymentMethod,
         notes,
