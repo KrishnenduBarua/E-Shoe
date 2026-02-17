@@ -14,7 +14,6 @@ const Products = () => {
   const [filters, setFilters] = useState({
     sortBy: "featured",
     priceRange: "all",
-    size: "all",
   });
 
   useEffect(() => {
@@ -118,30 +117,10 @@ const Products = () => {
                     className="w-full input-field"
                   >
                     <option value="all">All Prices</option>
-                    <option value="0-50">Under $50</option>
-                    <option value="50-100">$50 - $100</option>
-                    <option value="100-150">$100 - $150</option>
-                    <option value="150+">$150+</option>
-                  </select>
-                </div>
-
-                {/* Size */}
-                <div className="mb-6">
-                  <label className="block text-sm font-semibold text-gray-900 mb-2">
-                    Size
-                  </label>
-                  <select
-                    value={filters.size}
-                    onChange={(e) => handleFilterChange("size", e.target.value)}
-                    className="w-full input-field"
-                  >
-                    <option value="all">All Sizes</option>
-                    <option value="7">US 7</option>
-                    <option value="8">US 8</option>
-                    <option value="9">US 9</option>
-                    <option value="10">US 10</option>
-                    <option value="11">US 11</option>
-                    <option value="12">US 12</option>
+                    <option value="0-1500">Under ৳1500</option>
+                    <option value="1500-2000">৳1500 - ৳2000</option>
+                    <option value="2000-2500">৳2000 - ৳2500</option>
+                    <option value="3000+">৳3000+</option>
                   </select>
                 </div>
 
@@ -150,7 +129,6 @@ const Products = () => {
                     setFilters({
                       sortBy: "featured",
                       priceRange: "all",
-                      size: "all",
                     })
                   }
                   className="w-full btn-secondary text-sm"
