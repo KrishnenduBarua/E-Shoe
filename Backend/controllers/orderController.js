@@ -330,10 +330,12 @@ export const createOrderController = async (req, res, next) => {
       );
     }
 
-    // Clear user's cart
-    await connection.query("DELETE FROM cart_items WHERE user_id = ?", [
-      req.user.id,
-    ]);
+    // Clear user's cart (only if user is logged in)
+    if (userId) {
+      await connection.query("DELETE FROM cart_items WHERE user_id = ?", [
+        userId,
+      ]);
+    }
 
     // Commit transaction
     await connection.commit();
