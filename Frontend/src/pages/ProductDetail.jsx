@@ -210,11 +210,17 @@ const ProductDetail = () => {
               {/* Bkash Payment Info */}
               <div className="bg-pink-50 border border-pink-200 rounded-lg p-4 mb-6">
                 <div className="flex items-center gap-3">
-                  <img 
-                    src="https://cdn.icon-icons.com/icons2/2699/PNG/512/bkash_logo_icon_211914.png" 
-                    alt="Bkash Logo"
-                    className="w-16 h-16 object-contain"
-                  />
+                  <div className="flex items-center justify-center w-16 h-16 bg-white rounded-lg shrink-0 border-2 border-pink-600">
+                    <img
+                      src="https://seeklogo.com/images/B/bkash-logo-835789094F-seeklogo.com.png"
+                      alt="Bkash Logo"
+                      className="w-14 h-14 object-contain"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 80'%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-size='32' font-weight='bold' fill='%23E2136E'%3EbKash%3C/text%3E%3C/svg%3E";
+                      }}
+                    />
+                  </div>
                   <div>
                     <div className="text-sm text-gray-600">
                       For Bkash Payment
