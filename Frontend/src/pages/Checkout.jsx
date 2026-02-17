@@ -72,12 +72,7 @@ const Checkout = () => {
     }
 
     // Required fields
-    const requiredFields = [
-      "name",
-      "address",
-      "city",
-      "state",
-    ];
+    const requiredFields = ["name", "address", "city", "state"];
     requiredFields.forEach((field) => {
       if (!formData[field]) {
         newErrors[field] =
@@ -307,13 +302,14 @@ const Checkout = () => {
                     </div>
                     <div>
                       <label className="block text-sm font-semibold text-gray-900 mb-1">
-                        State *
+                        District *
                       </label>
                       <input
                         type="text"
                         name="state"
                         value={formData.state}
                         onChange={handleInputChange}
+                        placeholder="Enter your district"
                         className="input-field"
                         required
                         maxLength={50}
