@@ -210,31 +210,26 @@ const ProductDetail = () => {
               {/* Bkash Payment Info */}
               <div className="bg-pink-50 border border-pink-200 rounded-lg p-4 mb-6">
                 <div className="flex items-center gap-3">
-                  <div className="flex items-center justify-center w-12 h-12 bg-pink-600 rounded-lg">
-                    <span className="text-white font-bold text-lg">bKash</span>
-                  </div>
+                  <img 
+                    src="https://cdn.icon-icons.com/icons2/2699/PNG/512/bkash_logo_icon_211914.png" 
+                    alt="Bkash Logo"
+                    className="w-16 h-16 object-contain"
+                  />
                   <div>
-                    <div className="text-sm text-gray-600">For Bkash Payment</div>
-                    <div className="text-lg font-bold text-pink-600">01841-793410</div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Bkash Payment Info */}
-              <div className="bg-pink-50 border border-pink-200 rounded-lg p-4 mb-6">
-                <div className="flex items-center gap-3">
-                  <div className="flex items-center justify-center w-12 h-12 bg-pink-600 rounded-lg">
-                    <span className="text-white font-bold text-lg">bKash</span>
-                  </div>
-                  <div>
-                    <div className="text-sm text-gray-600">For Bkash Payment</div>
-                    <div className="text-lg font-bold text-pink-600">01841-793410</div>
+                    <div className="text-sm text-gray-600">
+                      For Bkash Payment
+                    </div>
+                    <div className="text-lg font-bold text-pink-600">
+                      01841-793410
+                    </div>
                   </div>
                 </div>
               </div>
 
               {/* Actions */}
-              <div className="space-y-3 mb-8">\n                <div className="flex gap-3">\n                  <button
+              <div className="space-y-3 mb-8">
+                <div className="flex gap-3">
+                  <button
                     onClick={handleOrderNow}
                     className="flex-1 bg-black text-white py-3 px-6 rounded-lg font-semibold hover:bg-gray-800 transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
                     disabled={!product.inStock}
