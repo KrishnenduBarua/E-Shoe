@@ -16,7 +16,7 @@ export default function AdminLayout({ children }) {
   const location = useLocation();
   const navigate = useNavigate();
   const { admin, logout } = useAdminStore();
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false); // Start closed on mobile
 
   const menuItems = [
     { path: "/", label: "Dashboard", icon: FiHome },
@@ -30,8 +30,22 @@ export default function AdminLayout({ children }) {
     navigate("/login");
   };
 
+  const closeSidebarOnMobile = () => {
+    if (window.innerWidth <= 768) {
+      setSidebarOpen(false);
+    }
+  };
+
   return (
     <div className="admin-layout">
+      {/* Mobile Backdrop Overlay */}
+      {sidebarOpen && (
+        <div
+          className="sidebar-backdrop"
+          onClick={() => setSidebarOpen(false)}
+        ></div>
+      )}
+
       {/* Sidebar */}
       <aside className={`sidebar ${sidebarOpen ? "open" : "closed"}`}>
         <div className="sidebar-header">
@@ -53,6 +67,7 @@ export default function AdminLayout({ children }) {
                 key={item.path}
                 to={item.path}
                 className={`nav-item ${isActive ? "active" : ""}`}
+                onClick={closeSidebarOnMobile}
               >
                 <Icon size={20} />
                 {sidebarOpen && <span>{item.label}</span>}

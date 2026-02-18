@@ -71,6 +71,23 @@ body {
   font-size: 13px;
 }
 
+.btn-icon {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  color: inherit;
+  transition: background-color 0.2s;
+}
+
+.btn-icon:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
 .card {
   background: white;
   border-radius: 8px;
@@ -80,6 +97,11 @@ body {
 
 .table-container {
   overflow-x: auto;
+}
+
+.table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 table {
@@ -393,6 +415,23 @@ tr:hover {
 
 .sidebar.closed {
   width: 70px;
+}
+
+.sidebar-backdrop {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
+
+@media (max-width: 768px) {
+  .sidebar-backdrop {
+    display: block;
+  }
 }
 
 .sidebar-header {
@@ -866,42 +905,285 @@ tr:hover {
 }
 
 /* Responsive */
+@media (max-width: 1024px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .grid-2-cols {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 768px) {
+  /* Sidebar mobile behavior */
   .sidebar {
     transform: translateX(-100%);
+    width: 260px;
   }
 
   .sidebar.open {
     transform: translateX(0);
   }
 
+  .sidebar.closed {
+    transform: translateX(-100%);
+    width: 260px;
+  }
+
+  /* Main content adjustments */
   .main-content {
     margin-left: 0 !important;
   }
 
+  /* Show mobile menu button */
   .mobile-menu {
     display: block;
   }
 
-  .filters-row,
-  .grid-2-cols,
-  .form-grid {
-    grid-template-columns: 1fr;
+  /* Header adjustments */
+  .header {
+    padding: 1rem;
   }
 
+  .admin-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+
+  .admin-name {
+    font-size: 0.875rem;
+  }
+
+  /* Content padding */
+  .content {
+    padding: 1rem;
+  }
+
+  /* Page header stack on mobile */
   .page-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 1rem;
   }
 
-  .content {
+  .page-header h1 {
+    font-size: 1.5rem;
+  }
+
+  /* Grid layouts to single column */
+  .filters-row,
+  .grid-2-cols,
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Stats grid to single column */
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stat-card {
     padding: 1rem;
   }
 
+  .stat-icon {
+    width: 50px;
+    height: 50px;
+  }
+
+  .stat-value {
+    font-size: 1.5rem;
+  }
+
+  /* Status grid adjustments */
+  .status-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Order status section stack */
   .order-status-section {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  /* Action buttons wrap */
+  .action-buttons {
+    width: 100%;
+  }
+
+  .action-buttons .btn {
+    flex: 1;
+    min-width: 0;
+  }
+
+  /* Table responsive wrapper */
+  .table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  table {
+    min-width: 600px;
+  }
+
+  th, td {
+    padding: 8px;
+    font-size: 0.875rem;
+  }
+
+  /* Product thumbnail smaller */
+  .product-thumbnail,
+  .product-thumbnail-placeholder {
+    width: 50px;
+    height: 50px;
+  }
+
+  /* Form actions stack */
+  .form-actions {
+    flex-direction: column-reverse;
+  }
+
+  .form-actions .btn {
+    width: 100%;
+  }
+
+  /* Modal full width on mobile */
+  .modal {
+    width: 95%;
+    max-height: 85vh;
+    padding: 1rem;
+  }
+
+  .modal-header h3 {
+    font-size: 1.125rem;
+  }
+
+  /* Card padding reduction */
+  .card {
+    padding: 1rem;
+  }
+
+  /* Info items adjust */
+  .info-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+
+  .info-item strong {
+    min-width: auto;
+    font-size: 0.875rem;
+  }
+
+  /* Badges smaller */
+  .badge {
+    font-size: 0.75rem;
+    padding: 3px 8px;
+  }
+
+  /* Buttons full width in actions */
+  .page-header .btn {
+    width: 100%;
+  }
+
+  /* Pagination adjustments */
+  .pagination {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .pagination .btn {
+    font-size: 0.875rem;
+    padding: 0.5rem 0.75rem;
+  }
+
+  /* Form elements */
+  .form-input,
+  .form-textarea,
+  .form-select {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+
+  /* Alert text smaller */
+  .alert {
+    font-size: 0.875rem;
+    padding: 0.75rem 1rem;
+  }
+
+  /* Image preview grid */
+  .image-preview-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  /* Extra small screens */
+  .stats-grid {
+    gap: 1rem;
+  }
+
+  .stat-card {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .stat-value {
+    font-size: 1.25rem;
+  }
+
+  /* Status grid single column */
+  .status-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Smaller buttons */
+  .btn {
+    font-size: 0.875rem;
+    padding: 0.75rem 1rem;
+  }
+
+  .btn-sm {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+  }
+
+  /* Table even smaller */
+  th, td {
+    padding: 6px;
+    font-size: 0.8rem;
+  }
+
+  /* Modal almost full screen */
+  .modal {
+    width: 100%;
+    max-height: 90vh;
+    border-radius: 0;
+  }
+
+  /* Image preview 2 columns */
+  .image-preview-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* Action buttons stack vertically */
+  .action-buttons {
+    flex-direction: column;
+  }
+
+  .action-buttons .btn {
+    width: 100%;
+  }
+
+  /* Smaller page header */
+  .page-header h1 {
+    font-size: 1.25rem;
+  }
+
+  /* Content padding smaller */
+  .content {
+    padding: 0.75rem;
   }
 }
 
