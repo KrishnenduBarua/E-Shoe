@@ -24,6 +24,12 @@ const Products = () => {
           sortBy: filters.sortBy,
         };
 
+        // Add search query from URL
+        const searchQuery = searchParams.get("search");
+        if (searchQuery) {
+          params.search = searchQuery;
+        }
+
         // Add filters
         if (filters.priceRange && filters.priceRange !== "all") {
           const [min, max] = filters.priceRange.split("-");
