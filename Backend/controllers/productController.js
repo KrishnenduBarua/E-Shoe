@@ -39,6 +39,11 @@ export const getAllProductsController = async (req, res, next) => {
       search,
     } = req.query;
 
+    // Debug logging
+    console.log("=== Product Search Debug ===");
+    console.log("Query params:", req.query);
+    console.log("Search term:", search);
+
     const offset = (page - 1) * limit;
     let query = `
       SELECT p.*
@@ -87,6 +92,10 @@ export const getAllProductsController = async (req, res, next) => {
     // Pagination
     query += " LIMIT ? OFFSET ?";
     params.push(parseInt(limit), offset);
+
+    // Debug: Log the final query and params
+    console.log("Final SQL query:", query);
+    console.log("Query params:", params);
 
     const [products] = await pool.query(query, params);
 
