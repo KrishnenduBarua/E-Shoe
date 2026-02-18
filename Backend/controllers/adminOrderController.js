@@ -392,7 +392,7 @@ export const getStats = async (req, res, next) => {
         SUM(CASE WHEN order_status = 'pending' THEN 1 ELSE 0 END) as pending_orders,
         SUM(CASE WHEN order_status = 'confirmed' THEN 1 ELSE 0 END) as confirmed_orders,
         SUM(CASE WHEN order_status = 'delivered' THEN 1 ELSE 0 END) as delivered_orders,
-        COALESCE(SUM(total_amount), 0) as total_revenue,
+        COALESCE(SUM(CASE WHEN order_status NOT IN ('rejected', 'cancelled') THEN total_amount ELSE 0 END), 0) as total_revenue,
         COALESCE(SUM(CASE WHEN order_status = 'delivered' THEN total_amount ELSE 0 END), 0) as delivered_revenue
       FROM orders
     `);

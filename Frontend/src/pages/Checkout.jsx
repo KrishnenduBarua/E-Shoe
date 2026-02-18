@@ -121,11 +121,29 @@ const Checkout = () => {
 
       // Create order via API
       const response = await api.orders.create(orderData);
-      const orderId = response.data.data.id;
+      const orderData_response = response.data.data;
+
+      // Show success message
+      const successMessage = `
+🎉 Order Placed Successfully!
+
+Order Number: ${orderData_response.order_number}
+Total Amount: ৳${orderData_response.total_amount?.toFixed(2)}
+
+📞 What's Next?
+Our team will call you at ${formData.phone} to confirm:
+• Delivery address
+• Payment method
+• Delivery time
+
+Please keep your phone accessible. Thank you for shopping with us!
+      `.trim();
+
+      alert(successMessage);
 
       // Clear cart and redirect to success page
       clearCart();
-      navigate(`/order-success?orderId=${orderId}`);
+      navigate(`/`);
     } catch (error) {
       console.error("Order failed:", error);
       const errorMessage =
